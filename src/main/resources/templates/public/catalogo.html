@@ -1,0 +1,511 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+  </head>
+
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" th:href="@{/catalogo}">Tienda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/contacto}">Contacto</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <a
+              sec:authorize="isAnonymous()"
+              th:href="@{/login}"
+              class="text-white me-3 fs-5"
+              title="Iniciar Sesión"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('ADMIN')"
+              th:href="@{/admin/productos}"
+              class="text-white me-3 fs-5"
+              title="Panel de Control"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('CLIENTE')"
+              th:href="@{/perfil}"
+              class="text-white me-3 fs-5"
+              title="Mi Perfil"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              href="#"
+              class="text-white fs-5"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#carritoOffcanvas"
+              title="Carrito"
+            >
+              <i class="bi bi-bag"></i>
+              <!-- Indicador de items en el carrito (Opcional visual) -->
+              <span
+                th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+                class="position-absolute top-10 translate-middle p-1 bg-danger border border-light rounded-circle"
+              >
+                <span class="visually-hidden">Nuevos items</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Offcanvas del Carrito -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+      <div class="offcanvas-header bg-dark text-white">
+        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <!-- Si el carrito está vacío -->
+        <div
+          th:if="${session.carrito == null or session.carrito.isEmpty()}"
+          class="text-center mt-5"
+        >
+          <i class="bi bi-cart-x text-muted" style="font-size: 4rem"></i>
+          <p class="text-muted mt-3">Tu carrito está vacío.</p>
+        </div>
+
+        <!-- Si hay prendas en la sesión -->
+        <div
+          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+          class="flex-grow-1 overflow-auto"
+        >
+          <div
+            class="card mb-3 border-0 shadow-sm"
+            th:each="item : ${session.carrito}"
+          >
+            <div class="row g-0 align-items-center p-2">
+              <div class="col-3">
+                <img
+                  th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                  class="img-fluid rounded"
+                  alt="Prenda"
+                />
+              </div>
+              <div class="col-9 px-3">
+                <p class="fw-bold mb-0 text-truncate" th:text="${item.nombre}">
+                  Nombre Prenda
+                </p>
+                <small class="text-muted d-block" th:text="${item.marca}"
+                  >Marca</small
+                >
+                <div
+                  class="d-flex justify-content-between align-items-center mt-2"
+                >
+                  <span class="fw-bold"
+                    >S/ <span th:text="${item.precio}">0.00</span></span
+                  >
+                  <span class="badge bg-secondary text-white"
+                    >x<span th:text="${item.cantidad}">1</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-3 border-top">
+          <a
+            th:href="@{/carrito/checkout}"
+            class="btn btn-dark w-100 fw-bold py-2"
+            th:classappend="${session.carrito == null or session.carrito.isEmpty() ? 'disabled' : ''}"
+          >
+            Proceder al Pago
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <main class="container my-5 flex-grow-1">
+      <!-- Conectaremos los filtros a este ID mediante el atributo form="formFiltros" -->
+      <form id="formFiltros" th:action="@{/catalogo}" method="GET"></form>
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Toda la colección</h2>
+
+        <!-- Select Dinámico conectado al form -->
+        <select
+          name="sort"
+          form="formFiltros"
+          class="form-select w-auto"
+          onchange="document.getElementById('formFiltros').submit()"
+        >
+          <option value="3" th:selected="${sortSeleccionado == '3'}">
+            Nuevos ingresos
+          </option>
+          <option value="1" th:selected="${sortSeleccionado == '1'}">
+            Precio: Menor a Mayor
+          </option>
+          <option value="2" th:selected="${sortSeleccionado == '2'}">
+            Precio: Mayor a Menor
+          </option>
+        </select>
+      </div>
+
+      <div class="row">
+        <!-- BARRA LATERAL DE FILTROS -->
+        <aside class="col-md-3 mb-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h5 class="fw-bold mb-3">Filtros</h5>
+
+              <h6 class="fw-bold mt-4 mb-2">Categorías</h6>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="categorias"
+                  value="1"
+                  form="formFiltros"
+                  id="cat1"
+                  th:checked="${categoriasSeleccionadas != null and #lists.contains(categoriasSeleccionadas, 1)}"
+                />
+                <label class="form-check-label" for="cat1">Sneakers</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="categorias"
+                  value="2"
+                  form="formFiltros"
+                  id="cat2"
+                  th:checked="${categoriasSeleccionadas != null and #lists.contains(categoriasSeleccionadas, 2)}"
+                />
+                <label class="form-check-label" for="cat2">Hoodies</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="categorias"
+                  value="3"
+                  form="formFiltros"
+                  id="cat3"
+                  th:checked="${categoriasSeleccionadas != null and #lists.contains(categoriasSeleccionadas, 3)}"
+                />
+                <label class="form-check-label" for="cat3">T-Shirts</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="categorias"
+                  value="4"
+                  form="formFiltros"
+                  id="cat4"
+                  th:checked="${categoriasSeleccionadas != null and #lists.contains(categoriasSeleccionadas, 4)}"
+                />
+                <label class="form-check-label" for="cat4">Pantalones</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="categorias"
+                  value="5"
+                  form="formFiltros"
+                  id="cat5"
+                  th:checked="${categoriasSeleccionadas != null and #lists.contains(categoriasSeleccionadas, 5)}"
+                />
+                <label class="form-check-label" for="cat5">Accesorios</label>
+              </div>
+
+              <h6 class="fw-bold mt-4 mb-2">Marcas</h6>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="marcas"
+                  value="1"
+                  form="formFiltros"
+                  id="marca1"
+                  th:checked="${marcasSeleccionadas != null and #lists.contains(marcasSeleccionadas, 1)}"
+                />
+                <label class="form-check-label" for="marca1">Amiri</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="marcas"
+                  value="2"
+                  form="formFiltros"
+                  id="marca2"
+                  th:checked="${marcasSeleccionadas != null and #lists.contains(marcasSeleccionadas, 2)}"
+                />
+                <label class="form-check-label" for="marca2">Off-White</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="marcas"
+                  value="3"
+                  form="formFiltros"
+                  id="marca3"
+                  th:checked="${marcasSeleccionadas != null and #lists.contains(marcasSeleccionadas, 3)}"
+                />
+                <label class="form-check-label" for="marca3"
+                  >Vale Forever</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="marcas"
+                  value="4"
+                  form="formFiltros"
+                  id="marca4"
+                  th:checked="${marcasSeleccionadas != null and #lists.contains(marcasSeleccionadas, 4)}"
+                />
+                <label class="form-check-label" for="marca4">Yeezy</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="marcas"
+                  value="5"
+                  form="formFiltros"
+                  id="marca5"
+                  th:checked="${marcasSeleccionadas != null and #lists.contains(marcasSeleccionadas, 5)}"
+                />
+                <label class="form-check-label" for="marca5">Balenciaga</label>
+              </div>
+
+              <button
+                type="submit"
+                form="formFiltros"
+                class="btn btn-dark w-100 mt-4"
+              >
+                Aplicar Filtros
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- SECCIÓN DE PRODUCTOS -->
+        <section class="col-md-9">
+          <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col" th:each="producto : ${productosPage.content}">
+              <div class="card h-100 border-0 shadow-sm">
+                <img
+                  th:src="${producto.imagenUrl != null ? producto.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                  class="card-img-top"
+                  alt="Producto"
+                />
+                <div class="card-body text-center">
+                  <p
+                    class="text-muted small mb-1"
+                    th:text="${producto.marca.nombre}"
+                  >
+                    Marca
+                  </p>
+                  <h6 class="card-title fw-bold" th:text="${producto.nombre}">
+                    Nombre Producto
+                  </h6>
+                  <p
+                    class="card-text fw-bold fs-5"
+                    th:text="${'S/. ' + producto.precio}"
+                  >
+                    S/. 0.00
+                  </p>
+                </div>
+                <div class="card-footer bg-white border-0 text-center pb-3">
+                  <a
+                    th:href="@{/producto/{id}(id=${producto.id})}"
+                    class="btn btn-outline-dark w-100 mb-2"
+                    >Ver Detalles</a
+                  >
+
+                  <!-- Formulario independiente para el carrito -->
+                  <form th:action="@{/carrito/agregar}" method="post">
+                    <input
+                      type="hidden"
+                      name="productoId"
+                      th:value="${producto.id}"
+                    />
+                    <input type="hidden" name="cantidad" value="1" />
+                    <button type="submit" class="btn btn-dark w-100">
+                      Al carrito <i class="bi bi-cart-plus"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alerta si no hay productos que coincidan con los filtros -->
+            <div class="col-12" th:if="${productosPage.isEmpty()}">
+              <div
+                class="alert alert-light text-center py-5 shadow-sm border-0"
+                role="alert"
+              >
+                <i
+                  class="bi bi-search"
+                  style="font-size: 3rem; color: #ccc"
+                ></i>
+                <h4 class="fw-bold mt-3">No hay coincidencias</h4>
+                <p class="text-muted mb-0">
+                  Intenta quitar algunos filtros para ver más productos.
+                </p>
+                <a th:href="@{/catalogo}" class="btn btn-outline-dark mt-3"
+                  >Limpiar Filtros</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Paginación dinámica manteniendo los filtros en la URL -->
+          <nav th:if="${productosPage.totalPages > 1}" class="mt-5">
+            <ul class="pagination justify-content-center">
+              <li
+                class="page-item"
+                th:classappend="${productosPage.first ? 'disabled' : ''}"
+              >
+                <a
+                  class="page-link text-dark"
+                  th:href="@{/catalogo(page=${productosPage.number - 1}, categorias=${categoriasSeleccionadas}, marcas=${marcasSeleccionadas}, sort=${sortSeleccionado})}"
+                  >Anterior</a
+                >
+              </li>
+
+              <li
+                class="page-item"
+                th:each="i : ${#numbers.sequence(0, productosPage.totalPages - 1)}"
+                th:classappend="${i == productosPage.number ? 'active' : ''}"
+              >
+                <a
+                  class="page-link"
+                  th:classappend="${i == productosPage.number ? 'bg-dark border-dark text-white' : 'text-dark'}"
+                  th:href="@{/catalogo(page=${i}, categorias=${categoriasSeleccionadas}, marcas=${marcasSeleccionadas}, sort=${sortSeleccionado})}"
+                  th:text="${i + 1}"
+                  >1</a
+                >
+              </li>
+
+              <li
+                class="page-item"
+                th:classappend="${productosPage.last ? 'disabled' : ''}"
+              >
+                <a
+                  class="page-link text-dark"
+                  th:href="@{/catalogo(page=${productosPage.number + 1}, categorias=${categoriasSeleccionadas}, marcas=${marcasSeleccionadas}, sort=${sortSeleccionado})}"
+                  >Siguiente</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">FAHAR</h5>
+            <p class="text-secondary small">
+              La tienda streetwear de referencia en Lima. Autenticidad y
+              comunidad desde 2021.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Atención al Cliente</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a
+                  th:href="@{/contacto}"
+                  class="text-decoration-none text-secondary"
+                  >Políticas de Devolución</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Libro de Reclamaciones</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Contacto</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
+                Borja
+              </li>
+              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
+              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
+              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="text-secondary" />
+        <div class="text-center text-secondary small">
+          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>

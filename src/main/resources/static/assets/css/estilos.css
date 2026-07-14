@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.card-img-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    transition: background 0.3s ease;
+}
+
+.card-img-overlay:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* Fija la altura del carrusel y prioriza la parte superior de las fotos */
+#heroCarousel .carousel-item img {
+    height: 550px; 
+    object-fit: cover;
+    object-position: center 15%;
+    width: 100%;
+}
+
+/* Fija la altura de las tarjetas de categorías en el Inicio */
+.card .card-img {
+    height: 500px; 
+    object-fit: cover;
+}

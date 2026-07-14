@@ -1,0 +1,297 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Cuenta | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+  </head>
+
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/catalogo}">Tienda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/contacto}">Contacto</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <a
+              sec:authorize="isAnonymous()"
+              th:href="@{/login}"
+              class="text-white me-3 fs-5"
+              title="Iniciar Sesión"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('ADMIN')"
+              th:href="@{/admin/productos}"
+              class="text-white me-3 fs-5"
+              title="Panel de Control"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('CLIENTE')"
+              th:href="@{/perfil}"
+              class="text-white me-3 fs-5"
+              title="Mi Perfil"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              href="#"
+              class="text-white fs-5"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#carritoOffcanvas"
+              title="Carrito"
+            >
+              <i class="bi bi-bag"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+      <div class="offcanvas-header bg-dark text-white">
+        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <p class="text-muted">Tu carrito está vacío.</p>
+        <div class="mt-auto">
+          <a th:href="@{/carrito/checkout}" class="btn btn-dark w-100"
+            >Proceder al Pago</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <main
+      class="container my-5 flex-grow-1 d-flex justify-content-center align-items-center"
+    >
+      <div
+        class="card p-5 shadow-sm border-0"
+        style="max-width: 550px; width: 100%"
+      >
+        <div class="text-center mb-4">
+          <h3 class="fw-bold">Únete a la comunidad</h3>
+          <p class="text-muted">
+            Crea tu cuenta en FAHAR para acceder a drops exclusivos.
+          </p>
+        </div>
+
+        <form th:action="@{/registro}" method="post" th:object="${usuarioDTO}">
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label fw-bold">Nombre</label>
+              <input
+                type="text"
+                th:field="*{nombre}"
+                class="form-control form-control-lg"
+                required
+              />
+              <div
+                class="text-danger small"
+                th:if="${#fields.hasErrors('nombre')}"
+                th:errors="*{nombre}"
+              >
+                Error
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-bold">Apellido</label>
+              <input
+                type="text"
+                th:field="*{apellidos}"
+                class="form-control form-control-lg"
+                required
+              />
+              <div
+                class="text-danger small"
+                th:if="${#fields.hasErrors('apellidos')}"
+                th:errors="*{apellidos}"
+              >
+                Error
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label fw-bold">Correo Electrónico</label>
+              <input
+                type="email"
+                th:field="*{correo}"
+                class="form-control form-control-lg"
+                placeholder="ejemplo@correo.com"
+                required
+              />
+              <div
+                class="text-danger small"
+                th:if="${#fields.hasErrors('correo')}"
+                th:errors="*{correo}"
+              >
+                Error
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-bold">Teléfono</label>
+              <input
+                type="tel"
+                th:field="*{telefono}"
+                class="form-control form-control-lg"
+                placeholder="999 999 999"
+                required
+              />
+              <div
+                class="text-danger small"
+                th:if="${#fields.hasErrors('telefono')}"
+                th:errors="*{telefono}"
+              >
+                Error
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Contraseña</label>
+            <input
+              type="password"
+              th:field="*{password}"
+              class="form-control form-control-lg"
+              placeholder="Mínimo 8 caracteres"
+              required
+            />
+            <div
+              class="text-danger small"
+              th:if="${#fields.hasErrors('password')}"
+              th:errors="*{password}"
+            >
+              Error
+            </div>
+          </div>
+          <div class="mb-4 form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="terms"
+              required
+            />
+            <label class="form-check-label small" for="terms"
+              >Acepto los
+              <a href="#" class="text-dark">Términos y Condiciones</a> y la
+              Política de Privacidad.</label
+            >
+          </div>
+          <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">
+            Crear Cuenta
+          </button>
+          <div class="text-center mt-4">
+            <p class="small">
+              ¿Ya tienes una cuenta?
+              <a th:href="@{/login}" class="text-dark fw-bold"
+                >Inicia sesión aquí</a
+              >
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">FAHAR</h5>
+            <p class="text-secondary small">
+              La tienda streetwear de referencia en Lima. Autenticidad y
+              comunidad desde 2021.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Atención al Cliente</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a
+                  th:href="@{/contacto}"
+                  class="text-decoration-none text-secondary"
+                  >Políticas de Devolución</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Libro de Reclamaciones</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Contacto</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
+                Borja
+              </li>
+              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
+              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
+              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="text-secondary" />
+        <div class="text-center text-secondary small">
+          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacto | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+  </head>
+
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/catalogo}">Tienda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" th:href="@{/contacto}">Contacto</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <a
+              sec:authorize="isAnonymous()"
+              th:href="@{/login}"
+              class="text-white me-3 fs-5"
+              title="Iniciar Sesión"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('ADMIN')"
+              th:href="@{/admin/productos}"
+              class="text-white me-3 fs-5"
+              title="Panel de Control"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('CLIENTE')"
+              th:href="@{/perfil}"
+              class="text-white me-3 fs-5"
+              title="Mi Perfil"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              href="#"
+              class="text-white fs-5"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#carritoOffcanvas"
+              title="Carrito"
+            >
+              <i class="bi bi-bag"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+      <div class="offcanvas-header bg-dark text-white">
+        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <p class="text-muted">Tu carrito está vacío.</p>
+        <div class="mt-auto">
+          <a th:href="@{/carrito/checkout}" class="btn btn-dark w-100"
+            >Proceder al Pago</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <main class="container my-5 flex-grow-1">
+      <h2 class="fw-bold text-center mb-5">Comunícate con nosotros</h2>
+
+      <div class="row g-5">
+        <div class="col-md-5">
+          <div class="card border-0 bg-dark text-white p-5 h-100 shadow-sm">
+            <h4 class="fw-bold mb-4">Información de la Tienda</h4>
+            <ul class="list-unstyled">
+              <li class="mb-4 fs-5">
+                <i class="bi bi-geo-alt-fill me-3 text-secondary"></i> Av.
+                Aviación 2340, San Borja
+              </li>
+              <li class="mb-4 fs-5">
+                <i class="bi bi-telephone-fill me-3 text-secondary"></i> +51 923
+                602 365
+              </li>
+              <li class="mb-4 fs-5">
+                <i class="bi bi-envelope-fill me-3 text-secondary"></i>
+                contacto@fahar.pe
+              </li>
+              <li class="mb-4 fs-5">
+                <i class="bi bi-clock-fill me-3 text-secondary"></i> Lun a Sáb:
+                10:00 am - 8:00 pm
+              </li>
+            </ul>
+            <hr class="border-secondary my-4" />
+            <h5 class="fw-bold mb-3">Síguenos</h5>
+            <div class="d-flex fs-3">
+              <a href="#" class="text-white me-4"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="text-white me-4"
+                ><i class="bi bi-tiktok"></i
+              ></a>
+              <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-7">
+          <div class="card border-0 shadow-sm p-5 h-100">
+            <h4 class="fw-bold mb-4">Envíanos un mensaje</h4>
+            <form th:action="@{/contacto/enviar}" method="post">
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="nombre" class="form-label fw-bold"
+                    >Nombre Completo</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-lg bg-light"
+                    id="nombre"
+                    placeholder="Tu nombre"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mt-3 mt-md-0">
+                  <label for="email" class="form-label fw-bold"
+                    >Correo Electrónico</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control form-control-lg bg-light"
+                    id="email"
+                    placeholder="nombre@ejemplo.com"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="asunto" class="form-label fw-bold">Asunto</label>
+                <select
+                  class="form-select form-select-lg bg-light"
+                  id="asunto"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Selecciona el motivo de tu consulta...
+                  </option>
+                  <option value="consulta">Consulta general</option>
+                  <option value="pedido">Dudas sobre mi pedido</option>
+                  <option value="stock">Consulta de stock</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label for="mensaje" class="form-label fw-bold">Mensaje</label>
+                <textarea
+                  class="form-control form-control-lg bg-light"
+                  id="mensaje"
+                  rows="5"
+                  placeholder="Escribe tu mensaje aquí..."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">
+                Enviar Mensaje
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">FAHAR</h5>
+            <p class="text-secondary small">
+              La tienda streetwear de referencia en Lima. Autenticidad y
+              comunidad desde 2021.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Atención al Cliente</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a
+                  th:href="@{/contacto}"
+                  class="text-decoration-none text-secondary"
+                  >Políticas de Devolución</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Libro de Reclamaciones</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Contacto</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
+                Borja
+              </li>
+              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
+              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
+              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="text-secondary" />
+        <div class="text-center text-secondary small">
+          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>

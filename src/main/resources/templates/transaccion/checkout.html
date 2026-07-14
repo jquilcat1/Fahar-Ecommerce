@@ -1,0 +1,295 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finalizar Compra | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+  </head>
+
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/catalogo}">Tienda</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/contacto}">Contacto</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <a
+              sec:authorize="isAnonymous()"
+              th:href="@{/login}"
+              class="text-white me-3 fs-5"
+              title="Iniciar Sesión"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('ADMIN')"
+              th:href="@{/admin/productos}"
+              class="text-white me-3 fs-5"
+              title="Panel de Control"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              sec:authorize="hasRole('CLIENTE')"
+              th:href="@{/perfil}"
+              class="text-white me-3 fs-5"
+              title="Mi Perfil"
+            >
+              <i class="bi bi-person-circle"></i>
+            </a>
+
+            <a
+              href="#"
+              class="text-white fs-5"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#carritoOffcanvas"
+              title="Carrito"
+            >
+              <i class="bi bi-bag"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+      <div class="offcanvas-header bg-dark text-white">
+        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <p class="text-muted text-center mt-5">Tu carrito está vacío.</p>
+        <div class="mt-auto">
+          <a th:href="@{/carrito/checkout}" class="btn btn-dark w-100 disabled"
+            >Proceder al Pago</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <main class="container my-5 flex-grow-1">
+      <h2 class="fw-bold mb-4">Finalizar Compra</h2>
+      <div class="row g-5">
+        <div class="col-md-8">
+          <h4 class="mb-3 fw-bold">Datos de Envío</h4>
+          <form
+            class="needs-validation"
+            th:action="@{/carrito/procesar}"
+            method="post"
+          >
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-bold">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tu nombre"
+                  required
+                />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-bold">Apellido</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tu apellido"
+                  required
+                />
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold">Dirección en Lima</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Av. Principal 123"
+                  required
+                />
+              </div>
+              <div class="col-md-5">
+                <label class="form-label fw-bold">Distrito</label>
+                <select class="form-select" required>
+                  <option value="">Elegir...</option>
+                  <option>San Borja</option>
+                  <option>Miraflores</option>
+                  <option>Surco</option>
+                  <option>La Molina</option>
+                </select>
+              </div>
+              <div class="col-md-7">
+                <label class="form-label fw-bold">Teléfono</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="999 999 999"
+                  required
+                />
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <h4 class="mb-3 fw-bold">Método de Pago</h4>
+            <div class="my-3">
+              <div class="form-check">
+                <input
+                  name="paymentMethod"
+                  type="radio"
+                  class="form-check-input"
+                  id="credit"
+                  checked
+                  required
+                />
+                <label class="form-check-label" for="credit"
+                  >Tarjeta de Crédito / Débito</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  name="paymentMethod"
+                  type="radio"
+                  class="form-check-input"
+                  id="transfer"
+                  required
+                />
+                <label class="form-check-label" for="transfer"
+                  >Transferencia / Yape / Plin</label
+                >
+              </div>
+            </div>
+
+            <button
+              class="w-100 btn btn-dark btn-lg mt-4 fw-bold"
+              type="submit"
+            >
+              Confirmar y Pagar
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card p-4 bg-white border shadow-sm">
+            <h5 class="fw-bold mb-3">Resumen del Pedido</h5>
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item text-center text-muted py-4 border-0">
+                No hay productos para procesar.
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between px-0 py-3 mt-2 border-top"
+              >
+                <span class="fs-5 fw-bold">Total</span>
+                <strong class="fs-5 fw-bold">S/ 0.00</strong>
+              </li>
+            </ul>
+            <form class="card p-2 border-0 bg-light">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Código promo"
+                />
+                <button type="submit" class="btn btn-secondary" disabled>
+                  Canjear
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">FAHAR</h5>
+            <p class="text-secondary small">
+              La tienda streetwear de referencia en Lima. Autenticidad y
+              comunidad desde 2021.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Atención al Cliente</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Términos y Condiciones</a
+                >
+              </li>
+              <li>
+                <a
+                  th:href="@{/contacto}"
+                  class="text-decoration-none text-secondary"
+                  >Políticas de Devolución</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-secondary"
+                  >Libro de Reclamaciones</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h5 class="fw-bold">Contacto</h5>
+            <ul class="list-unstyled text-secondary small">
+              <li>
+                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
+                Borja
+              </li>
+              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
+              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
+              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
+            </ul>
+          </div>
+        </div>
+        <hr class="text-secondary" />
+        <div class="text-center text-secondary small">
+          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>
