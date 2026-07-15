@@ -30,7 +30,16 @@ public class Producto {
     private Integer stock;
 
     @Column(name = "imagen_url", length = 255)
-    private String imagenUrl;
+    private String imagenUrl; // Foto 1 (Principal)
+
+    @Column(name = "imagen_url_2", length = 255)
+    private String imagenUrl2; // Foto 2 (Hover/Secundaria)
+
+    @Column(name = "imagen_url_3", length = 255)
+    private String imagenUrl3; // Foto 3 (Opcional)
+
+    @Column(name = "imagen_url_4", length = 255)
+    private String imagenUrl4; // Foto 4 (Opcional)
 
     // Relación con Categoría
     @ManyToOne(fetch = FetchType.LAZY)

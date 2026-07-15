@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pe.edu.utp.streetwear.model.MensajeContacto;
+import pe.edu.utp.streetwear.repository.CategoriaRepository;
+import pe.edu.utp.streetwear.repository.MarcaRepository;
 import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
 import pe.edu.utp.streetwear.model.Producto;
 import pe.edu.utp.streetwear.service.CatalogoService;
@@ -29,6 +31,10 @@ public class HomeController {
     private final ProductoService productoService;
     private final MensajeContactoRepository mensajeRepository;
 
+    // NUEVAS INYECCIONES PARA LOS FILTROS DINÁMICOS
+    private final CategoriaRepository categoriaRepository;
+    private final MarcaRepository marcaRepository;
+
     @GetMapping("/")
     public String inicio(Model model) {
         return "public/index";
@@ -39,21 +45,24 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) List<Integer> categorias,
             @RequestParam(required = false) List<Integer> marcas,
-            @RequestParam(defaultValue = "3") String sort, // 3 = Nuevos
+            @RequestParam(defaultValue = "3") String sort,
             Model model) {
 
         int prendasPorPagina = 9;
 
-        // Llamamos al nuevo super-método del servicio
         Page<Producto> productosPage = productoService.listarProductosFiltrados(page, prendasPorPagina, categorias,
                 marcas, sort);
 
         model.addAttribute("productosPage", productosPage);
 
-        // Devolvemos los filtros a la vista para mantener los checkboxes marcados
+        // Devolvemos los filtros seleccionados
         model.addAttribute("categoriasSeleccionadas", categorias);
         model.addAttribute("marcasSeleccionadas", marcas);
         model.addAttribute("sortSeleccionado", sort);
+
+        // ENVIAMOS TODAS LAS CATEGORÍAS Y MARCAS DE LA BD A LA VISTA
+        model.addAttribute("listaCategorias", categoriaRepository.findAll());
+        model.addAttribute("listaMarcas", marcaRepository.findAll());
 
         return "public/catalogo";
     }
@@ -83,21 +92,17 @@ public class HomeController {
             @RequestParam("mensaje") String mensaje,
             RedirectAttributes redirectAttributes) {
 
-        // 1. Armamos el objeto con los datos del formulario
         MensajeContacto nuevoMensaje = new MensajeContacto();
         nuevoMensaje.setNombre(nombre);
         nuevoMensaje.setCorreo(correo);
         nuevoMensaje.setAsunto(asunto);
         nuevoMensaje.setMensaje(mensaje);
 
-        // 2. Lo guardamos en MySQL
         mensajeRepository.save(nuevoMensaje);
 
-        // 3. Disparamos la alerta verde de éxito para la vista
         redirectAttributes.addFlashAttribute("exito",
                 "Tu mensaje ha sido enviado correctamente. Te contactaremos pronto.");
 
-        // 4. Redirigimos de vuelta a la página de contacto
         return "redirect:/contacto";
     }
 }

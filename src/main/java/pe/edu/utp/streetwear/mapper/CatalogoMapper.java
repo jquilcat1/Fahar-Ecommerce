@@ -15,7 +15,12 @@ public class CatalogoMapper {
         dto.setDescripcion(model.getDescripcion());
         dto.setPrecio(model.getPrecio());
         dto.setStock(model.getStock());
+
+        // --- MAPEO DE LA GALERÍA COMPLETA (BD a Vista) ---
         dto.setImagenUrl(model.getImagenUrl());
+        dto.setImagenUrl2(model.getImagenUrl2());
+        dto.setImagenUrl3(model.getImagenUrl3());
+        dto.setImagenUrl4(model.getImagenUrl4());
 
         // Mapeamos ID y Nombre de la Categoría
         if (model.getCategoria() != null) {
@@ -40,7 +45,13 @@ public class CatalogoMapper {
         model.setDescripcion(dto.getDescripcion());
         model.setPrecio(dto.getPrecio());
         model.setStock(dto.getStock());
+
+        // --- MAPEO DE LA GALERÍA COMPLETA (Vista a BD) ---
         model.setImagenUrl(dto.getImagenUrl());
+        model.setImagenUrl2(dto.getImagenUrl2());
+        model.setImagenUrl3(dto.getImagenUrl3());
+        model.setImagenUrl4(dto.getImagenUrl4());
+
         return model;
     }
 

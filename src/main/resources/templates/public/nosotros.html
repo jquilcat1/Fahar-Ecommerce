@@ -144,11 +144,33 @@
           </div>
         </div>
         <div class="col-md-6">
-          <img
-            th:src="@{/assets/img/FotoTienda.jpg}"
-            class="img-fluid rounded shadow-lg"
-            alt="Tienda física FAHAR"
-          />
+          <!-- CONTENEDOR DE LA IMAGEN DE LA TIENDA -->
+          <div
+            class="rounded-4 overflow-hidden shadow-lg h-100 position-relative"
+          >
+            <!-- Imagen con efecto Escala (Zoom suave) -->
+            <img
+              src="/assets/img/FotoTienda.jpg"
+              class="img-fluid w-100 h-100"
+              style="
+                object-fit: cover;
+                transition: transform 0.6s ease-out;
+                cursor: pointer;
+              "
+              onmouseover="this.style.transform = 'scale(1.08)'"
+              onmouseout="this.style.transform = 'scale(1)'"
+              alt="Interior de la tienda FAHAR Streetwear"
+            />
+
+            <!-- Capa superpuesta opcional: Sombra interior para darle más profundidad arquitectónica -->
+            <div
+              class="position-absolute top-0 start-0 w-100 h-100"
+              style="
+                box-shadow: inset 0px 0px 30px rgba(0, 0, 0, 0.15);
+                pointer-events: none;
+              "
+            ></div>
+          </div>
         </div>
       </div>
     </main>
