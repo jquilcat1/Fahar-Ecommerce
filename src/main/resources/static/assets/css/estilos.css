@@ -30,3 +30,68 @@ main {
     height: 500px; 
     object-fit: cover;
 }
+
+.form-control.is-valid, 
+.was-validated .form-control:valid,
+.form-control.is-invalid, 
+.was-validated .form-control:invalid {
+    background-image: none !important;
+}
+
+/* 1. Botón "Ver Catálogo" Dinámico */
+.btn-pro {
+    transition: all 0.4s ease;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+}
+.btn-pro .arrow-icon {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+    width: 0;
+}
+.btn-pro:hover {
+    transform: scale(1.05);
+    background-color: #fff;
+    color: #000;
+}
+.btn-pro:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+    width: 20px; /* Ancho del icono */
+    margin-left: 8px !important;
+}
+
+/* 2. Tarjetas de Categoría (Efecto Hover 3D) */
+.card-hover {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    border-radius: 12px;
+    overflow: hidden; /* Mantiene la imagen dentro de los bordes curvos */
+}
+.card-hover:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+    z-index: 10;
+}
+
+/* 3. Zoom interno de la imagen de la tarjeta */
+.card-hover .card-img {
+    transition: transform 0.7s ease;
+}
+.card-hover:hover .card-img {
+    transform: scale(1.1); /* Efecto de acercamiento lento */
+}
+
+/* 4. Tipografía elegante para títulos */
+.tracking-wide {
+    letter-spacing: 2px;
+}
+
+/* Evitar el borde y check verde en los elementos select (Desplegables) */
+.was-validated .form-select:valid, 
+.form-select.is-valid {
+    border-color: var(--bs-border-color) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}

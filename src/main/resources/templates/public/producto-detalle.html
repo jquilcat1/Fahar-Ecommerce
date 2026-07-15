@@ -229,19 +229,27 @@
             <h5 class="fw-bold">Atención al Cliente</h5>
             <ul class="list-unstyled text-secondary small">
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalTerminos"
+                  class="text-decoration-none text-secondary"
                   >Términos y Condiciones</a
                 >
               </li>
               <li>
                 <a
-                  th:href="@{/contacto}"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalPoliticas"
                   class="text-decoration-none text-secondary"
                   >Políticas de Devolución</a
                 >
               </li>
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  th:href="@{/contacto(asunto='reclamo')}"
+                  class="text-decoration-none text-secondary"
                   >Libro de Reclamaciones</a
                 >
               </li>

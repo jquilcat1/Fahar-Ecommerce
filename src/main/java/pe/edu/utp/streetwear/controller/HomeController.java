@@ -6,7 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import pe.edu.utp.streetwear.model.MensajeContacto;
+import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
 import pe.edu.utp.streetwear.model.Producto;
 import pe.edu.utp.streetwear.service.CatalogoService;
 import pe.edu.utp.streetwear.service.InteraccionService;
@@ -24,6 +27,7 @@ public class HomeController {
     private final CatalogoService catalogoService;
     private final InteraccionService interaccionService;
     private final ProductoService productoService;
+    private final MensajeContactoRepository mensajeRepository;
 
     @GetMapping("/")
     public String inicio(Model model) {
@@ -41,10 +45,11 @@ public class HomeController {
         int prendasPorPagina = 9;
 
         // Llamamos al nuevo super-método del servicio
-        Page<Producto> productosPage = productoService.listarProductosFiltrados(page, prendasPorPagina, categorias, marcas, sort);
+        Page<Producto> productosPage = productoService.listarProductosFiltrados(page, prendasPorPagina, categorias,
+                marcas, sort);
 
         model.addAttribute("productosPage", productosPage);
-        
+
         // Devolvemos los filtros a la vista para mantener los checkboxes marcados
         model.addAttribute("categoriasSeleccionadas", categorias);
         model.addAttribute("marcasSeleccionadas", marcas);
@@ -71,7 +76,28 @@ public class HomeController {
     }
 
     @PostMapping("/contacto/enviar")
-    public String enviarMensajeContacto() {
-        return "redirect:/contacto?enviado=true";
+    public String enviarMensajeContacto(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("correo") String correo,
+            @RequestParam("asunto") String asunto,
+            @RequestParam("mensaje") String mensaje,
+            RedirectAttributes redirectAttributes) {
+
+        // 1. Armamos el objeto con los datos del formulario
+        MensajeContacto nuevoMensaje = new MensajeContacto();
+        nuevoMensaje.setNombre(nombre);
+        nuevoMensaje.setCorreo(correo);
+        nuevoMensaje.setAsunto(asunto);
+        nuevoMensaje.setMensaje(mensaje);
+
+        // 2. Lo guardamos en MySQL
+        mensajeRepository.save(nuevoMensaje);
+
+        // 3. Disparamos la alerta verde de éxito para la vista
+        redirectAttributes.addFlashAttribute("exito",
+                "Tu mensaje ha sido enviado correctamente. Te contactaremos pronto.");
+
+        // 4. Redirigimos de vuelta a la página de contacto
+        return "redirect:/contacto";
     }
 }

@@ -211,7 +211,115 @@
         </div>
       </div>
     </main>
+    <!-- MODAL: Términos y Condiciones -->
+    <div
+      class="modal fade"
+      id="modalTerminos"
+      tabindex="-1"
+      aria-labelledby="modalTerminosLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold" id="modalTerminosLabel">
+              Términos y Condiciones
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-muted small">
+            <h6 class="fw-bold text-dark">1. Aceptación de los Términos</h6>
+            <p>
+              Al acceder y utilizar el sitio web de FAHAR Streetwear, aceptas
+              estar sujeto a estos términos y condiciones. Si no estás de
+              acuerdo con alguna parte, no podrás utilizar nuestros servicios.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">2. Compras y Pagos</h6>
+            <p>
+              Todos los precios están en Soles (PEN) e incluyen IGV. Nos
+              reservamos el derecho de modificar los precios en cualquier
+              momento. Las compras están sujetas a disponibilidad de stock.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">3. Propiedad Intelectual</h6>
+            <p>
+              Todo el contenido visual, fotografías y logotipos son propiedad
+              exclusiva de FAHAR o de sus respectivas marcas afiliadas. Queda
+              prohibida su reproducción sin autorización.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-dark w-100"
+              data-bs-dismiss="modal"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- MODAL: Políticas de Privacidad y Devolución -->
+    <div
+      class="modal fade"
+      id="modalPoliticas"
+      tabindex="-1"
+      aria-labelledby="modalPoliticasLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold" id="modalPoliticasLabel">
+              Políticas y Privacidad
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-muted small">
+            <h6 class="fw-bold text-dark">1. Privacidad de Datos</h6>
+            <p>
+              FAHAR Streetwear se compromete a proteger tu privacidad. Los datos
+              personales solicitados (nombre, teléfono, correo) son utilizados
+              estrictamente para procesar tus pedidos y mejorar tu experiencia
+              de compra, bajo la Ley de Protección de Datos Personales (Ley N°
+              29733).
+            </p>
+            <h6 class="fw-bold text-dark mt-3">2. Política de Devoluciones</h6>
+            <p>
+              Aceptamos cambios y devoluciones dentro de los
+              <strong>7 días calendario</strong> posteriores a la recepción de
+              tu pedido. La prenda debe estar en su estado original, sin uso,
+              sin lavado y con todas sus etiquetas y empaques originales.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">3. Artículos no retornables</h6>
+            <p>
+              Por motivos de higiene, no se aceptan devoluciones de accesorios,
+              ropa interior o calcetines, salvo por defectos de fábrica.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-dark w-100"
+              data-bs-dismiss="modal"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
       <div class="container">
         <div class="row">
@@ -226,19 +334,27 @@
             <h5 class="fw-bold">Atención al Cliente</h5>
             <ul class="list-unstyled text-secondary small">
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalTerminos"
+                  class="text-decoration-none text-secondary"
                   >Términos y Condiciones</a
                 >
               </li>
               <li>
                 <a
-                  th:href="@{/contacto}"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalPoliticas"
                   class="text-decoration-none text-secondary"
                   >Políticas de Devolución</a
                 >
               </li>
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  th:href="@{/contacto(asunto='reclamo')}"
+                  class="text-decoration-none text-secondary"
                   >Libro de Reclamaciones</a
                 >
               </li>

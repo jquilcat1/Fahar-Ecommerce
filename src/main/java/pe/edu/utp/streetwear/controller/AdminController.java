@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.utp.streetwear.dto.ProductoDTO;
 import pe.edu.utp.streetwear.repository.CategoriaRepository;
 import pe.edu.utp.streetwear.repository.MarcaRepository;
+import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
 import pe.edu.utp.streetwear.service.CatalogoService;
 
 @Controller
@@ -19,6 +20,7 @@ public class AdminController {
     private final CatalogoService catalogoService;
     private final CategoriaRepository categoriaRepository;
     private final MarcaRepository marcaRepository;
+    private final MensajeContactoRepository mensajeContactoRepository;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -62,5 +64,12 @@ public class AdminController {
         model.addAttribute("categorias", categoriaRepository.findAll());
         model.addAttribute("marcas", marcaRepository.findAll());
         return "admin/producto-form";
+    }
+
+    @GetMapping("/mensajes")
+    public String bandejaMensajes(Model model) {
+        model.addAttribute("mensajesPendientes", mensajeContactoRepository.findByEstado("PENDIENTE"));
+        model.addAttribute("reclamos", mensajeContactoRepository.findByAsunto("reclamo"));
+        return "admin/bandeja-mensajes"; // Vista que crearemos después para el panel
     }
 }

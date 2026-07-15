@@ -149,7 +149,26 @@
         <div class="col-md-7">
           <div class="card border-0 shadow-sm p-5 h-100">
             <h4 class="fw-bold mb-4">Envíanos un mensaje</h4>
-            <form th:action="@{/contacto/enviar}" method="post">
+            <div
+              th:if="${exito}"
+              class="alert alert-success alert-dismissible fade show border-0 shadow-sm"
+              role="alert"
+            >
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <span th:text="${exito}"></span>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            <form
+              th:action="@{/contacto/enviar}"
+              method="post"
+              id="contactoForm"
+              novalidate
+            >
               <div class="row mb-4">
                 <div class="col-md-6">
                   <label for="nombre" class="form-label fw-bold"
@@ -157,11 +176,18 @@
                   >
                   <input
                     type="text"
+                    name="nombre"
                     class="form-control form-control-lg bg-light"
                     id="nombre"
                     placeholder="Tu nombre"
+                    minlength="3"
+                    maxlength="50"
+                    pattern="^[a-zA-ZÀ-ÿ\s]+$"
                     required
                   />
+                  <div class="invalid-feedback">
+                    Ingresa un nombre válido (solo letras, mín. 3 caracteres).
+                  </div>
                 </div>
                 <div class="col-md-6 mt-3 mt-md-0">
                   <label for="email" class="form-label fw-bold"
@@ -169,39 +195,79 @@
                   >
                   <input
                     type="email"
+                    name="correo"
                     class="form-control form-control-lg bg-light"
                     id="email"
                     placeholder="nombre@ejemplo.com"
+                    maxlength="100"
                     required
                   />
+                  <div class="invalid-feedback">
+                    Ingresa un formato de correo electrónico válido.
+                  </div>
                 </div>
               </div>
+
               <div class="mb-4">
                 <label for="asunto" class="form-label fw-bold">Asunto</label>
                 <select
+                  name="asunto"
                   class="form-select form-select-lg bg-light"
                   id="asunto"
                   required
                 >
-                  <option value="" selected disabled>
+                  <option
+                    value=""
+                    th:selected="${param.asunto == null}"
+                    disabled
+                  >
                     Selecciona el motivo de tu consulta...
                   </option>
                   <option value="consulta">Consulta general</option>
                   <option value="pedido">Dudas sobre mi pedido</option>
                   <option value="stock">Consulta de stock</option>
+                  <option
+                    value="reclamo"
+                    th:selected="${param.asunto != null and param.asunto[0] == 'reclamo'}"
+                  >
+                    Queja / Reclamo (Libro de Reclamaciones)
+                  </option>
                   <option value="otro">Otro</option>
                 </select>
+                <div class="invalid-feedback">
+                  Por favor, selecciona el motivo de tu mensaje.
+                </div>
               </div>
+
+              <!-- Alerta Legal Oculta -->
+              <div class="mb-4 d-none" id="alertaReclamo">
+                <div class="alert alert-warning small border-0 shadow-sm">
+                  <i class="bi bi-info-circle-fill me-1"></i>
+                  <strong>Libro de Reclamaciones:</strong> Al enviar un reclamo
+                  formal, nuestro equipo te responderá en un plazo máximo de 15
+                  días hábiles.
+                </div>
+              </div>
+
               <div class="mb-4">
-                <label for="mensaje" class="form-label fw-bold">Mensaje</label>
+                <label for="mensaje" class="form-label fw-bold"
+                  >Mensaje / Detalle</label
+                >
                 <textarea
+                  name="mensaje"
                   class="form-control form-control-lg bg-light"
                   id="mensaje"
                   rows="5"
-                  placeholder="Escribe tu mensaje aquí..."
+                  placeholder="Escribe todos los detalles aquí..."
+                  minlength="15"
+                  maxlength="500"
                   required
                 ></textarea>
+                <div class="invalid-feedback">
+                  El mensaje debe tener entre 15 y 500 caracteres.
+                </div>
               </div>
+
               <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold">
                 Enviar Mensaje
               </button>
@@ -210,7 +276,115 @@
         </div>
       </div>
     </main>
+    <!-- MODAL: Términos y Condiciones -->
+    <div
+      class="modal fade"
+      id="modalTerminos"
+      tabindex="-1"
+      aria-labelledby="modalTerminosLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold" id="modalTerminosLabel">
+              Términos y Condiciones
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-muted small">
+            <h6 class="fw-bold text-dark">1. Aceptación de los Términos</h6>
+            <p>
+              Al acceder y utilizar el sitio web de FAHAR Streetwear, aceptas
+              estar sujeto a estos términos y condiciones. Si no estás de
+              acuerdo con alguna parte, no podrás utilizar nuestros servicios.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">2. Compras y Pagos</h6>
+            <p>
+              Todos los precios están en Soles (PEN) e incluyen IGV. Nos
+              reservamos el derecho de modificar los precios en cualquier
+              momento. Las compras están sujetas a disponibilidad de stock.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">3. Propiedad Intelectual</h6>
+            <p>
+              Todo el contenido visual, fotografías y logotipos son propiedad
+              exclusiva de FAHAR o de sus respectivas marcas afiliadas. Queda
+              prohibida su reproducción sin autorización.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-dark w-100"
+              data-bs-dismiss="modal"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- MODAL: Políticas de Privacidad y Devolución -->
+    <div
+      class="modal fade"
+      id="modalPoliticas"
+      tabindex="-1"
+      aria-labelledby="modalPoliticasLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold" id="modalPoliticasLabel">
+              Políticas y Privacidad
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-muted small">
+            <h6 class="fw-bold text-dark">1. Privacidad de Datos</h6>
+            <p>
+              FAHAR Streetwear se compromete a proteger tu privacidad. Los datos
+              personales solicitados (nombre, teléfono, correo) son utilizados
+              estrictamente para procesar tus pedidos y mejorar tu experiencia
+              de compra, bajo la Ley de Protección de Datos Personales (Ley N°
+              29733).
+            </p>
+            <h6 class="fw-bold text-dark mt-3">2. Política de Devoluciones</h6>
+            <p>
+              Aceptamos cambios y devoluciones dentro de los
+              <strong>7 días calendario</strong> posteriores a la recepción de
+              tu pedido. La prenda debe estar en su estado original, sin uso,
+              sin lavado y con todas sus etiquetas y empaques originales.
+            </p>
+            <h6 class="fw-bold text-dark mt-3">3. Artículos no retornables</h6>
+            <p>
+              Por motivos de higiene, no se aceptan devoluciones de accesorios,
+              ropa interior o calcetines, salvo por defectos de fábrica.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-dark w-100"
+              data-bs-dismiss="modal"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
       <div class="container">
         <div class="row">
@@ -225,19 +399,27 @@
             <h5 class="fw-bold">Atención al Cliente</h5>
             <ul class="list-unstyled text-secondary small">
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalTerminos"
+                  class="text-decoration-none text-secondary"
                   >Términos y Condiciones</a
                 >
               </li>
               <li>
                 <a
-                  th:href="@{/contacto}"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalPoliticas"
                   class="text-decoration-none text-secondary"
                   >Políticas de Devolución</a
                 >
               </li>
               <li>
-                <a href="#" class="text-decoration-none text-secondary"
+                <a
+                  th:href="@{/contacto(asunto='reclamo')}"
+                  class="text-decoration-none text-secondary"
                   >Libro de Reclamaciones</a
                 >
               </li>
