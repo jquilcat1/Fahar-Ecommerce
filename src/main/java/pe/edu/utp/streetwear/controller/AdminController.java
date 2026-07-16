@@ -11,9 +11,10 @@ import pe.edu.utp.streetwear.repository.CategoriaRepository;
 import pe.edu.utp.streetwear.repository.MarcaRepository;
 import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
 import pe.edu.utp.streetwear.service.CatalogoService;
+import pe.edu.utp.streetwear.service.UsuarioService;
 
 @Controller
-@RequestMapping("/admin") 
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -21,6 +22,7 @@ public class AdminController {
     private final CategoriaRepository categoriaRepository;
     private final MarcaRepository marcaRepository;
     private final MensajeContactoRepository mensajeContactoRepository;
+    private final UsuarioService usuarioService;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -59,7 +61,7 @@ public class AdminController {
 
     @GetMapping("/productos/editar/{id}")
     public String editarProducto(@PathVariable Long id, Model model) {
-        ProductoDTO productoDTO = catalogoService.buscarProductoPorId(id); 
+        ProductoDTO productoDTO = catalogoService.buscarProductoPorId(id);
         model.addAttribute("productoDTO", productoDTO);
         model.addAttribute("categorias", categoriaRepository.findAll());
         model.addAttribute("marcas", marcaRepository.findAll());
@@ -71,5 +73,18 @@ public class AdminController {
         model.addAttribute("mensajesPendientes", mensajeContactoRepository.findByEstado("PENDIENTE"));
         model.addAttribute("reclamos", mensajeContactoRepository.findByAsunto("reclamo"));
         return "admin/bandeja-mensajes"; // Vista que crearemos después para el panel
+    }
+
+    @GetMapping("/ventas")
+    public String verVentas(Model model) {
+        // model.addAttribute("ventas", ventaService.obtenerTodas());
+        return "admin/ventas";
+    }
+
+    @GetMapping("/clientes")
+    public String verClientes(Model model) {
+        // Fíjate en la "u" minúscula de usuarioService
+        model.addAttribute("clientes", usuarioService.listarTodos());
+        return "admin/clientes";
     }
 }

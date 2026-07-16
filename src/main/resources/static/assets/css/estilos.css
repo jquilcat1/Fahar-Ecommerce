@@ -95,3 +95,33 @@ main {
     background-image: none !important;
     box-shadow: none !important;
 }
+
+/* Paginación moderna */
+.pagination .page-link {
+    border-radius: 50rem !important;
+    margin: 0 5px;
+    border: none;
+    color: #212529;
+    font-weight: 500;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.05);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+/* Botón de la página actual */
+.pagination .page-item.active .page-link {
+    background-color: #212529;
+    color: white;
+    box-shadow: 0 .25rem .5rem rgba(0,0,0,.15);
+}
+
+/* Botones Anterior/Siguiente desactivados */
+.pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    color: #adb5bd;
+    box-shadow: none;
+}

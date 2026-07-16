@@ -73,8 +73,8 @@
             >
               <i class="bi bi-person-circle"></i>
             </a>
-
             <a
+              sec:authorize="!hasRole('ADMIN')"
               href="#"
               class="text-white fs-5"
               data-bs-toggle="offcanvas"
@@ -82,11 +82,138 @@
               title="Carrito"
             >
               <i class="bi bi-bag"></i>
+              <!-- Indicador de items en el carrito (Opcional visual) -->
+              <span
+                th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+                class="position-absolute top-10 translate-middle p-1 bg-danger border border-light rounded-circle"
+              >
+                <span class="visually-hidden">Nuevos items</span>
+              </span>
             </a>
           </div>
         </div>
       </div>
     </nav>
+
+    <!-- Offcanvas del Carrito -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+      <div class="offcanvas-header bg-dark text-white">
+        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <!-- Si el carrito está vacío -->
+        <div
+          th:if="${session.carrito == null or session.carrito.isEmpty()}"
+          class="text-center mt-5"
+        >
+          <i class="bi bi-cart-x text-muted" style="font-size: 4rem"></i>
+          <p class="text-muted mt-3">Tu carrito está vacío.</p>
+        </div>
+
+        <!-- Si hay prendas en la sesión -->
+        <div
+          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+          class="flex-grow-1 overflow-auto"
+        >
+          <div
+            class="card mb-3 border-0 shadow-sm"
+            th:each="item : ${session.carrito}"
+          >
+            <div class="row g-0 align-items-center p-2">
+              <div class="col-3">
+                <img
+                  th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                  class="img-fluid rounded"
+                  alt="Prenda"
+                />
+              </div>
+              <div class="col-9 px-3">
+                <!-- Título y botón de eliminar en la misma línea -->
+                <div class="d-flex justify-content-between align-items-start">
+                  <p
+                    class="fw-bold mb-0 text-truncate"
+                    style="max-width: 80%"
+                    th:text="${item.nombre}"
+                  >
+                    Nombre Prenda
+                  </p>
+
+                  <!-- BOTÓN ELIMINAR -->
+                  <form
+                    th:action="@{/carrito/eliminar}"
+                    method="post"
+                    class="m-0 p-0"
+                  >
+                    <input
+                      type="hidden"
+                      name="productoId"
+                      th:value="${item.productoId}"
+                    />
+                    <input
+                      type="hidden"
+                      name="talla"
+                      th:value="${item.talla}"
+                    />
+                    <button
+                      type="submit"
+                      class="btn btn-sm text-danger p-0"
+                      title="Quitar del carrito"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <small
+                  class="text-muted d-block"
+                  th:text="${item.marca + ' | ' + item.talla}"
+                  >Marca | Talla</small
+                >
+
+                <div
+                  class="d-flex justify-content-between align-items-center mt-2"
+                >
+                  <span class="fw-bold"
+                    >S/ <span th:text="${item.precio}">0.00</span></span
+                  >
+                  <span class="badge bg-secondary text-white"
+                    >x<span th:text="${item.cantidad}">1</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer con el TOTAL -->
+        <div
+          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+          class="mt-auto pt-3 border-top"
+        >
+          <!-- FILA DEL TOTAL -->
+          <div
+            class="d-flex justify-content-between align-items-center mb-3 px-2"
+          >
+            <span class="fw-bold text-muted">Subtotal:</span>
+            <span class="fw-bold fs-5" th:text="${'S/ ' + session.totalCarrito}"
+              >S/ 0.00</span
+            >
+          </div>
+
+          <a
+            th:href="@{/carrito/checkout}"
+            class="btn btn-dark w-100 fw-bold py-2"
+          >
+            Proceder al Pago
+          </a>
+        </div>
+      </div>
+    </div>
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
       <div class="offcanvas-header bg-dark text-white">
@@ -200,6 +327,7 @@
             <button
               class="w-100 btn btn-dark btn-lg mt-4 fw-bold"
               type="submit"
+              th:disabled="${session.carrito == null or #lists.isEmpty(session.carrito)}"
             >
               Confirmar y Pagar
             </button>
@@ -209,17 +337,72 @@
         <div class="col-md-4">
           <div class="card p-4 bg-white border shadow-sm">
             <h5 class="fw-bold mb-3">Resumen del Pedido</h5>
+
             <ul class="list-group list-group-flush mb-3">
-              <li class="list-group-item text-center text-muted py-4 border-0">
+              <!-- CASO 1: Carrito Vacío (Por si entran por URL directa sin productos) -->
+              <li
+                th:if="${session.carrito == null or #lists.isEmpty(session.carrito)}"
+                class="list-group-item text-center text-muted py-4 border-0"
+              >
+                <i class="bi bi-cart-x fs-2 d-block mb-2"></i>
                 No hay productos para procesar.
               </li>
+
+              <!-- CASO 2: Iteración de productos en sesión -->
               <li
-                class="list-group-item d-flex justify-content-between px-0 py-3 mt-2 border-top"
+                th:each="item : ${session.carrito}"
+                class="list-group-item d-flex justify-content-between lh-sm px-0 py-3 border-bottom"
               >
-                <span class="fs-5 fw-bold">Total</span>
-                <strong class="fs-5 fw-bold">S/ 0.00</strong>
+                <div class="d-flex align-items-center">
+                  <img
+                    th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                    alt="Prenda"
+                    style="width: 50px; height: 50px; object-fit: cover"
+                    class="rounded me-3 border"
+                  />
+                  <div>
+                    <h6
+                      class="my-0 fw-bold text-truncate"
+                      style="max-width: 150px"
+                      th:text="${item.nombre}"
+                    >
+                      Nombre del Producto
+                    </h6>
+                    <small
+                      class="text-muted"
+                      th:text="${item.marca + ' | Talla: ' + item.talla}"
+                      >Marca | Talla</small
+                    >
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span
+                    class="text-muted d-block fw-bold"
+                    th:text="${'S/ ' + item.precio}"
+                    >S/ 0.00</span
+                  >
+                  <small
+                    class="badge bg-secondary text-white mt-1"
+                    th:text="${'Cant: ' + item.cantidad}"
+                    >Cant: 1</small
+                  >
+                </div>
+              </li>
+
+              <!-- TOTAL FINAL -->
+              <li
+                class="list-group-item d-flex justify-content-between px-0 py-3 mt-2 border-0 bg-light rounded mt-2"
+              >
+                <span class="fs-5 fw-bold text-dark px-2">Total</span>
+                <strong
+                  class="fs-5 fw-bold text-dark px-2"
+                  th:text="${session.totalCarrito != null ? 'S/ ' + session.totalCarrito : 'S/ 0.00'}"
+                  >S/ 0.00</strong
+                >
               </li>
             </ul>
+
+            <!-- Formulario de cupón -->
             <form class="card p-2 border-0 bg-light">
               <div class="input-group">
                 <input
@@ -227,7 +410,7 @@
                   class="form-control"
                   placeholder="Código promo"
                 />
-                <button type="submit" class="btn btn-secondary" disabled>
+                <button type="button" class="btn btn-secondary" disabled>
                   Canjear
                 </button>
               </div>

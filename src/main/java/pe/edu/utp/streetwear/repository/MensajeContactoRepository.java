@@ -2,10 +2,8 @@ package pe.edu.utp.streetwear.repository;
 
 import pe.edu.utp.streetwear.model.MensajeContacto;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import java.util.List;
 
-@Repository
 public interface MensajeContactoRepository extends JpaRepository<MensajeContacto, Long> {
 
     // 1. Te devuelve todos los mensajes que tengan un estado específico (ej. "PENDIENTE")

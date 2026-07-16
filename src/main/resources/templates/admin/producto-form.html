@@ -58,13 +58,18 @@
                 </a>
               </li>
               <li class="nav-item mb-2">
-                <a href="#" class="nav-link rounded"
-                  ><i class="bi bi-cart me-2"></i> Ventas</a
+                <a th:href="@{/admin/ventas}" class="nav-link rounded"
+                  ><i class="bi bi-cart me-2"></i> Ventas / Órdenes</a
                 >
               </li>
               <li class="nav-item mb-2">
-                <a href="#" class="nav-link rounded"
+                <a th:href="@{/admin/clientes}" class="nav-link rounded"
                   ><i class="bi bi-people me-2"></i> Clientes</a
+                >
+              </li>
+              <li class="nav-item mb-2">
+                <a th:href="@{/admin/mensajes}" class="nav-link rounded"
+                  ><i class="bi bi-envelope-paper me-2"></i> Mensajes</a
                 >
               </li>
             </ul>
@@ -236,14 +241,12 @@
               </h5>
               <p class="text-muted small mb-3">
                 Formatos permitidos: .webp, .jpg, .png. <br />
-  
               </p>
 
               <div class="row g-3 mb-4 bg-light p-3 rounded border">
                 <div class="col-md-6">
                   <label class="form-label fw-bold text-dark"
-                    >Foto 1
-                    <span class="text-danger">*</span></label
+                    >Foto 1 <span class="text-danger">*</span></label
                   >
                   <input
                     type="file"
@@ -256,8 +259,7 @@
 
                 <div class="col-md-6">
                   <label class="form-label fw-bold text-dark"
-                    >Foto 2
-                    <span class="text-danger">*</span></label
+                    >Foto 2 <span class="text-danger">*</span></label
                   >
                   <input
                     type="file"
@@ -269,9 +271,7 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-bold text-dark"
-                    >Foto 3</label
-                  >
+                  <label class="form-label fw-bold text-dark">Foto 3</label>
                   <input
                     type="file"
                     class="form-control"
@@ -281,9 +281,7 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-bold text-dark"
-                    >Foto 4</label
-                  >
+                  <label class="form-label fw-bold text-dark">Foto 4</label>
                   <input
                     type="file"
                     class="form-control"
@@ -294,12 +292,13 @@
               </div>
 
               <!-- BOTÓN DE GUARDAR -->
-              <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                <button
-                  type="submit"
-                  class="btn btn-dark btn-lg px-5 fw-bold shadow-sm"
-                >
-                  <i class="bi bi-save me-2"></i> Guardar Producto
+              <div class="d-flex justify-content-end gap-3 mt-4">
+                <button type="reset" class="btn btn-outline-secondary px-4">
+                  Limpiar Campos
+                </button>
+
+                <button type="submit" class="btn btn-dark px-4">
+                  <i class="bi bi-save me-2"></i>Guardar Producto
                 </button>
               </div>
             </form>

@@ -16,7 +16,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
-    <link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
   </head>
 
   <body class="bg-light d-flex flex-column min-vh-100">
@@ -76,6 +76,7 @@
             </a>
 
             <a
+              sec:authorize="!hasRole('ADMIN')"
               href="#"
               class="text-white fs-5"
               data-bs-toggle="offcanvas"
@@ -134,12 +135,48 @@
                 />
               </div>
               <div class="col-9 px-3">
-                <p class="fw-bold mb-0 text-truncate" th:text="${item.nombre}">
-                  Nombre Prenda
-                </p>
-                <small class="text-muted d-block" th:text="${item.marca}"
-                  >Marca</small
+                <!-- Título y botón de eliminar en la misma línea -->
+                <div class="d-flex justify-content-between align-items-start">
+                  <p
+                    class="fw-bold mb-0 text-truncate"
+                    style="max-width: 80%"
+                    th:text="${item.nombre}"
+                  >
+                    Nombre Prenda
+                  </p>
+
+                  <!-- BOTÓN ELIMINAR -->
+                  <form
+                    th:action="@{/carrito/eliminar}"
+                    method="post"
+                    class="m-0 p-0"
+                  >
+                    <input
+                      type="hidden"
+                      name="productoId"
+                      th:value="${item.productoId}"
+                    />
+                    <input
+                      type="hidden"
+                      name="talla"
+                      th:value="${item.talla}"
+                    />
+                    <button
+                      type="submit"
+                      class="btn btn-sm text-danger p-0"
+                      title="Quitar del carrito"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <small
+                  class="text-muted d-block"
+                  th:text="${item.marca + ' | ' + item.talla}"
+                  >Marca | Talla</small
                 >
+
                 <div
                   class="d-flex justify-content-between align-items-center mt-2"
                 >
@@ -155,11 +192,24 @@
           </div>
         </div>
 
-        <div class="mt-auto pt-3 border-top">
+        <!-- Footer con el TOTAL -->
+        <div
+          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+          class="mt-auto pt-3 border-top"
+        >
+          <!-- FILA DEL TOTAL -->
+          <div
+            class="d-flex justify-content-between align-items-center mb-3 px-2"
+          >
+            <span class="fw-bold text-muted">Subtotal:</span>
+            <span class="fw-bold fs-5" th:text="${'S/ ' + session.totalCarrito}"
+              >S/ 0.00</span
+            >
+          </div>
+
           <a
             th:href="@{/carrito/checkout}"
             class="btn btn-dark w-100 fw-bold py-2"
-            th:classappend="${session.carrito == null or session.carrito.isEmpty() ? 'disabled' : ''}"
           >
             Proceder al Pago
           </a>

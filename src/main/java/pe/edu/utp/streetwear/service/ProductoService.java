@@ -2,13 +2,14 @@ package pe.edu.utp.streetwear.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import pe.edu.utp.streetwear.exception.ResourceNotFoundException;
 import pe.edu.utp.streetwear.model.Producto;
 import pe.edu.utp.streetwear.repository.ProductoRepository;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +56,10 @@ public class ProductoService {
         } else {
             return productoRepository.findAll(pageable); // Si no hay filtros, trae todo
         }
+    }
+
+    public Producto buscarPorId(Long id) {
+        return productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
     }
 }
