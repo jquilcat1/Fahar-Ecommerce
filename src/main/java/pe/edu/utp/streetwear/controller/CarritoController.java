@@ -99,8 +99,8 @@ public class CarritoController {
         return "redirect:" + (referer != null ? referer : "/catalogo");
     }
 
-    @PostMapping("/procesar")
-    public String procesarCompra() {
-        return "redirect:/historial?compraExitosa=true";
+        @PostMapping("/procesar")
+        public String procesarCompra() {
+            return "redirect:/historial?compraExitosa=true";
+        }
     }
-}

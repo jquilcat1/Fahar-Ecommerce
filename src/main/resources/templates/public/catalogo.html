@@ -329,6 +329,7 @@
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseMarcas"
+                card-footer
                 aria-expanded="false"
                 aria-controls="collapseMarcas"
                 onclick="
@@ -411,26 +412,44 @@
                   </p>
                 </div>
 
-                <!-- BOTONES DE ACCIÓN MANTIENEN SU FUNCIÓN -->
+                <!-- BOTONES DE ACCIÓN -->
                 <div class="card-footer bg-white border-0 text-center pb-3">
-                  <a
-                    th:href="@{/producto/{id}(id=${producto.id})}"
-                    class="btn btn-outline-dark w-100 mb-2"
-                    >Ver Detalles</a
-                  >
+                  <!-- VISTA PARA CLIENTES / PÚBLICO -->
+                  <div sec:authorize="!hasRole('ADMIN')">
+                    <a
+                      th:href="@{/producto/{id}(id=${producto.id})}"
+                      class="btn btn-outline-dark w-100 mb-2"
+                      >Ver Detalles</a
+                    >
+                    <form th:action="@{/carrito/agregar}" method="post">
+                      <input
+                        type="hidden"
+                        name="productoId"
+                        th:value="${producto.id}"
+                      />
+                      <input type="hidden" name="cantidad" value="1" />
+                      <button type="submit" class="btn btn-dark w-100">
+                        Al carrito <i class="bi bi-cart-plus"></i>
+                      </button>
+                    </form>
+                  </div>
 
-                  <!-- Formulario independiente para el carrito -->
-                  <form th:action="@{/carrito/agregar}" method="post">
-                    <input
-                      type="hidden"
-                      name="productoId"
-                      th:value="${producto.id}"
-                    />
-                    <input type="hidden" name="cantidad" value="1" />
-                    <button type="submit" class="btn btn-dark w-100">
-                      Al carrito <i class="bi bi-cart-plus"></i>
-                    </button>
-                  </form>
+                  <!-- VISTA PARA EL ADMINISTRADOR -->
+                  <div sec:authorize="hasRole('ADMIN')">
+                    <a
+                      th:href="@{/producto/{id}(id=${producto.id})}"
+                      class="btn btn-outline-secondary w-100 mb-2"
+                      >Inspeccionar Detalles</a
+                    >
+                    <div
+                      class="text-center text-muted mt-2 border rounded py-1 bg-light"
+                    >
+                      <small
+                        ><i class="bi bi-shield-lock-fill me-1"></i>Compras
+                        deshabilitadas</small
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

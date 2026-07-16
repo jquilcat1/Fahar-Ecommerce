@@ -239,6 +239,7 @@
       <div class="row g-5">
         <div class="col-md-8">
           <h4 class="mb-3 fw-bold">Datos de Envío</h4>
+
           <form
             class="needs-validation"
             th:action="@{/carrito/procesar}"
@@ -250,45 +251,68 @@
                 <input
                   type="text"
                   class="form-control"
+                  name="nombre"
                   placeholder="Tu nombre"
                   required
+                  pattern="[A-Za-z áéíóúÁÉÍÓÚñÑ]+"
+                  title="Solo se permiten letras"
                 />
               </div>
+
               <div class="col-sm-6">
                 <label class="form-label fw-bold">Apellido</label>
                 <input
                   type="text"
                   class="form-control"
+                  name="apellido"
                   placeholder="Tu apellido"
                   required
+                  pattern="[A-Za-z áéíóúÁÉÍÓÚñÑ]+"
+                  title="Solo se permiten letras"
                 />
               </div>
+
               <div class="col-12">
                 <label class="form-label fw-bold">Dirección en Lima</label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Av. Principal 123"
+                  name="direccion"
+                  placeholder="Av. Principal 123, Dpto 402"
                   required
+                  minlength="5"
                 />
               </div>
+
               <div class="col-md-5">
                 <label class="form-label fw-bold">Distrito</label>
-                <select class="form-select" required>
-                  <option value="">Elegir...</option>
-                  <option>San Borja</option>
-                  <option>Miraflores</option>
-                  <option>Surco</option>
-                  <option>La Molina</option>
+                <select class="form-select" name="distrito" required>
+                  <option value="" selected disabled>Elegir distrito...</option>
+                  <option value="San Borja">San Borja</option>
+                  <option value="Miraflores">Miraflores</option>
+                  <option value="Surco">Surco</option>
+                  <option value="La Molina">La Molina</option>
+                  <option value="San Isidro">San Isidro</option>
+                  <option value="Barranco">Barranco</option>
+                  <option value="Lince">Lince</option>
+                  <option value="Jesús María">Jesús María</option>
+                  <option value="Pueblo Libre">Pueblo Libre</option>
+                  <option value="Chorrillos">Chorrillos</option>
+                  <option value="Magdalena del Mar">Magdalena del Mar</option>
+                  <option value="San Miguel">San Miguel</option>
                 </select>
               </div>
+
               <div class="col-md-7">
                 <label class="form-label fw-bold">Teléfono</label>
                 <input
                   type="tel"
                   class="form-control"
-                  placeholder="999 999 999"
+                  name="telefono"
+                  placeholder="999888777"
                   required
+                  pattern="9[0-9]{8}"
+                  title="Debe ser un número peruano válido de 9 dígitos empezando con 9"
                 />
               </div>
             </div>
@@ -299,10 +323,11 @@
             <div class="my-3">
               <div class="form-check">
                 <input
-                  name="paymentMethod"
+                  name="metodoPago"
                   type="radio"
                   class="form-check-input"
                   id="credit"
+                  value="TARJETA"
                   checked
                   required
                 />
@@ -312,10 +337,11 @@
               </div>
               <div class="form-check">
                 <input
-                  name="paymentMethod"
+                  name="metodoPago"
                   type="radio"
                   class="form-check-input"
                   id="transfer"
+                  value="TRANSFERENCIA"
                   required
                 />
                 <label class="form-check-label" for="transfer"
@@ -339,7 +365,7 @@
             <h5 class="fw-bold mb-3">Resumen del Pedido</h5>
 
             <ul class="list-group list-group-flush mb-3">
-              <!-- CASO 1: Carrito Vacío (Por si entran por URL directa sin productos) -->
+              <!-- Caso: Carrito Vacío -->
               <li
                 th:if="${session.carrito == null or #lists.isEmpty(session.carrito)}"
                 class="list-group-item text-center text-muted py-4 border-0"
@@ -348,7 +374,7 @@
                 No hay productos para procesar.
               </li>
 
-              <!-- CASO 2: Iteración de productos en sesión -->
+              <!-- Iteración de productos -->
               <li
                 th:each="item : ${session.carrito}"
                 class="list-group-item d-flex justify-content-between lh-sm px-0 py-3 border-bottom"
@@ -363,10 +389,10 @@
                   <div>
                     <h6
                       class="my-0 fw-bold text-truncate"
-                      style="max-width: 150px"
+                      style="max-width: 140px"
                       th:text="${item.nombre}"
                     >
-                      Nombre del Producto
+                      Nombre
                     </h6>
                     <small
                       class="text-muted"
@@ -375,17 +401,49 @@
                     >
                   </div>
                 </div>
-                <div class="text-end">
+
+                <div
+                  class="text-end d-flex flex-column align-items-end justify-content-center"
+                >
                   <span
                     class="text-muted d-block fw-bold"
                     th:text="${'S/ ' + item.precio}"
                     >S/ 0.00</span
                   >
-                  <small
-                    class="badge bg-secondary text-white mt-1"
-                    th:text="${'Cant: ' + item.cantidad}"
-                    >Cant: 1</small
-                  >
+
+                  <!-- Contenedor: Cantidad + Basurero -->
+                  <div class="d-flex align-items-center mt-2">
+                    <small
+                      class="badge bg-secondary text-white me-2"
+                      th:text="${'Cant: ' + item.cantidad}"
+                      >Cant: 1</small
+                    >
+
+                    <!-- Botón Eliminar -->
+                    <form
+                      th:action="@{/carrito/eliminar}"
+                      method="post"
+                      class="m-0 p-0"
+                    >
+                      <input
+                        type="hidden"
+                        name="productoId"
+                        th:value="${item.productoId}"
+                      />
+                      <input
+                        type="hidden"
+                        name="talla"
+                        th:value="${item.talla}"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-sm text-danger p-0"
+                        title="Eliminar del resumen"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </li>
 
