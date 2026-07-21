@@ -50,6 +50,23 @@
         </div>
 
         <div class="col-md-9">
+          <!-- Alerta de Compra Exitosa (Solo aparece tras pagar en MP) -->
+          <div
+            th:if="${param.compraExitosa}"
+            class="alert alert-success alert-dismissible fade show shadow-sm mb-4"
+            role="alert"
+          >
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong>¡Pago Exitoso!</strong> Tu compra se ha registrado
+            correctamente y estamos preparando tu pedido.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+
           <div class="card p-5 border-0 shadow-sm">
             <h3 class="fw-bold mb-4">Historial de Compras</h3>
             <div class="table-responsive">
@@ -77,9 +94,95 @@
                     </td>
                     <td th:text="${'S/ ' + pedido.total}"></td>
                     <td>
-                      <button class="btn btn-sm btn-outline-dark">
+                      <!-- Botón que activa el modal del Cliente -->
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-dark"
+                        data-bs-toggle="modal"
+                        th:data-bs-target="'#modalDetalle-' + ${pedido.id}"
+                      >
                         Ver Detalles
                       </button>
+
+                      <!-- Modal de Detalle (Cliente) -->
+                      <div
+                        class="modal fade text-start"
+                        th:id="'modalDetalle-' + ${pedido.id}"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content border-0 shadow">
+                            <div class="modal-header bg-dark text-white">
+                              <h5 class="modal-title fw-bold">
+                                Detalle de tu Pedido #FA-<span
+                                  th:text="${pedido.id}"
+                                ></span>
+                              </h5>
+                              <button
+                                type="button"
+                                class="btn-close btn-close-white"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="list-group list-group-flush mb-3">
+                                <li
+                                  class="list-group-item d-flex justify-content-between align-items-center px-0"
+                                  th:each="detalle : ${pedido.detalles}"
+                                >
+                                  <div class="d-flex align-items-center">
+                                    <img
+                                      th:src="${detalle.producto.imagenUrl != null ? detalle.producto.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                                      alt="Producto"
+                                      style="
+                                        width: 50px;
+                                        height: 50px;
+                                        object-fit: cover;
+                                      "
+                                      class="rounded me-3"
+                                    />
+                                    <div>
+                                      <h6
+                                        class="my-0 fw-bold"
+                                        th:text="${detalle.producto.nombre}"
+                                      >
+                                        Nombre de la Prenda
+                                      </h6>
+                                      <small class="text-muted"
+                                        >Cant:
+                                        <span
+                                          th:text="${detalle.cantidad}"
+                                        ></span
+                                      ></small>
+                                    </div>
+                                  </div>
+                                  <span
+                                    class="text-muted fw-bold"
+                                    th:text="'S/ ' + ${detalle.subtotal}"
+                                  ></span>
+                                </li>
+                              </ul>
+                              <div
+                                class="d-flex justify-content-between fw-bold fs-5 pt-3 border-top"
+                              >
+                                <span>Total pagado:</span>
+                                <span th:text="'S/ ' + ${pedido.total}"></span>
+                              </div>
+                            </div>
+                            <div class="modal-footer bg-light">
+                              <button
+                                type="button"
+                                class="btn btn-dark w-100"
+                                data-bs-dismiss="modal"
+                              >
+                                Cerrar
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 

@@ -13,6 +13,7 @@ import pe.edu.utp.streetwear.repository.MarcaRepository;
 import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
 import pe.edu.utp.streetwear.repository.ReclamacionRepository;
 import pe.edu.utp.streetwear.service.CatalogoService;
+import pe.edu.utp.streetwear.service.TransaccionService;
 import pe.edu.utp.streetwear.service.UsuarioService;
 import org.springframework.data.domain.Sort;
 import java.util.List;
@@ -28,6 +29,7 @@ public class AdminController {
     private final MensajeContactoRepository mensajeContactoRepository;
     private final UsuarioService usuarioService;
     private final ReclamacionRepository reclamacionRepository;
+    private final TransaccionService transaccionService;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -86,7 +88,7 @@ public class AdminController {
 
     @GetMapping("/ventas")
     public String verVentas(Model model) {
-        // model.addAttribute("ventas", ventaService.obtenerTodas());
+        model.addAttribute("ventas", transaccionService.listarTodosLosPedidos());
         return "admin/ventas";
     }
 

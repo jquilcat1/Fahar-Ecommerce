@@ -20,7 +20,6 @@ import pe.edu.utp.streetwear.repository.UsuarioRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +34,12 @@ public class TransaccionService {
     private final PagoRepository pagoRepository;
     private final ProductoRepository productoRepository;
 
-    public List<PedidoDTO> listarPedidosPorUsuario(Long usuarioId) {
-        return pedidoRepository.findByUsuarioId(usuarioId).stream()
-                .map(transaccionMapper::toDTO)
-                .collect(Collectors.toList());
+    public List<Pedido> listarPedidosPorUsuario(Long usuarioId) {
+        return pedidoRepository.findByUsuarioId(usuarioId);
+    }
+
+    public List<Pedido> listarTodosLosPedidos() {
+        return pedidoRepository.findAll();
     }
 
     public PedidoDTO crearPedido(PedidoDTO dto) {

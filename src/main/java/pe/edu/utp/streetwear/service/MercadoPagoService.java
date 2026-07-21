@@ -46,7 +46,6 @@ public class MercadoPagoService {
 
         Map<String, Object> payer = new HashMap<>();
 
-        // Datos básicos obligatorios
         String email = (usuario != null && usuario.getCorreo() != null) ? usuario.getCorreo() : "test_user@test.com";
         payer.put("email", email);
 
@@ -55,7 +54,6 @@ public class MercadoPagoService {
         payer.put("name", nombre);
         payer.put("surname", apellidos);
 
-        // Teléfono con formato numérico seguro para la API
         Map<String, Object> phone = new HashMap<>();
         String telefonoStr = (usuario != null && usuario.getTelefono() != null && !usuario.getTelefono().isEmpty())
                 ? usuario.getTelefono().replaceAll("\\D", "")
@@ -68,7 +66,6 @@ public class MercadoPagoService {
         }
         payer.put("phone", phone);
 
-        // Limpieza y envío estricto del DNI
         String dniInput = (usuario != null && usuario.getDni() != null) ? usuario.getDni() : "12345678";
         String dniLimpio = dniInput.replaceAll("\\D", "");
 
@@ -88,7 +85,13 @@ public class MercadoPagoService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {
+                    });
+
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 return (String) response.getBody().get("init_point");
             }
