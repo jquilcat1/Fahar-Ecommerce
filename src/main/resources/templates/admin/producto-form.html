@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
     <style>
       body {
         overflow-x: hidden;
@@ -36,60 +37,10 @@
   <body class="bg-light">
     <div class="container-fluid">
       <div class="row">
-        <!-- MENÚ LATERAL (SIDEBAR) -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar py-4 position-fixed">
-          <div class="position-sticky">
-            <div class="text-center mb-4">
-              <a
-                th:href="@{/}"
-                class="text-white text-decoration-none fw-bold fs-3"
-                >FAHAR.</a
-              >
-              <p class="text-secondary small mt-1">Panel de Control</p>
-            </div>
-            <hr class="text-secondary" />
-            <ul class="nav flex-column mb-auto">
-              <li class="nav-item mb-2">
-                <a
-                  th:href="@{/admin/productos}"
-                  class="nav-link active rounded"
-                >
-                  <i class="bi bi-box-seam me-2"></i> Inventario
-                </a>
-              </li>
-              <li class="nav-item mb-2">
-                <a th:href="@{/admin/ventas}" class="nav-link rounded"
-                  ><i class="bi bi-cart me-2"></i> Ventas / Órdenes</a
-                >
-              </li>
-              <li class="nav-item mb-2">
-                <a th:href="@{/admin/clientes}" class="nav-link rounded"
-                  ><i class="bi bi-people me-2"></i> Clientes</a
-                >
-              </li>
-              <li class="nav-item mb-2">
-                <a th:href="@{/admin/mensajes}" class="nav-link rounded"
-                  ><i class="bi bi-envelope-paper me-2"></i> Mensajes</a
-                >
-              </li>
-            </ul>
-            <hr class="text-secondary mt-5" />
-            <div class="px-3 mb-2">
-              <a th:href="@{/}" class="btn btn-outline-light w-100"
-                ><i class="bi bi-shop me-2"></i> Ir a la Tienda</a
-              >
-            </div>
-            <div class="px-3">
-              <form th:action="@{/logout}" method="post" class="m-0 p-0">
-                <button type="submit" class="btn btn-danger w-100">
-                  <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-                </button>
-              </form>
-            </div>
-          </div>
-        </nav>
+        <div
+          th:replace="~{fragments/admin-sidebar :: admin-sidebar(activeTab='productos')}"
+        ></div>
 
-        <!-- CONTENIDO PRINCIPAL -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-5">
           <div
             class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom"
@@ -112,7 +63,6 @@
             class="card border-0 shadow-sm p-4 mx-auto"
             style="max-width: 900px"
           >
-            <!-- EL ATRIBUTO ENCTYPE ES OBLIGATORIO PARA SUBIR ARCHIVOS -->
             <form
               th:action="@{/admin/productos/guardar}"
               th:object="${productoDTO}"
@@ -235,12 +185,11 @@
                 </div>
               </div>
 
-              <!-- SECCIÓN 3: GALERÍA DE IMÁGENES FÍSICAS -->
               <h5 class="fw-bold mb-3 border-bottom pb-2">
                 Galería de Imágenes
               </h5>
               <p class="text-muted small mb-3">
-                Formatos permitidos: .webp, .jpg, .png. <br />
+                Formatos permitidos: .webp, .jpg, .png.
               </p>
 
               <div class="row g-3 mb-4 bg-light p-3 rounded border">
@@ -291,7 +240,6 @@
                 </div>
               </div>
 
-              <!-- BOTÓN DE GUARDAR -->
               <div class="d-flex justify-content-end gap-3 mt-4">
                 <button type="reset" class="btn btn-outline-secondary px-4">
                   Limpiar Campos

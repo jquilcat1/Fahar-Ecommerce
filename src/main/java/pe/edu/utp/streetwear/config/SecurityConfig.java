@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/assets/**", "/uploads/**").permitAll()
                         .requestMatchers("/", "/catalogo", "/producto/**", "/nosotros", "/contacto", "/contacto/enviar",
+                                "/terminos", "/politicas", "/reclamaciones", "/reclamaciones/guardar",
                                 "/error")
                         .permitAll()
                         .requestMatchers("/login", "/registro").permitAll()
@@ -39,9 +40,9 @@ public class SecurityConfig {
                             boolean isAdmin = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
                             if (isAdmin) {
-                                response.sendRedirect("/admin/productos"); 
+                                response.sendRedirect("/admin/productos");
                             } else {
-                                response.sendRedirect("/"); 
+                                response.sendRedirect("/");
                             }
                         })
                         .failureUrl("/login?error=true")

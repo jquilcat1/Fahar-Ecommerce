@@ -7,11 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.utp.streetwear.dto.ProductoDTO;
+import pe.edu.utp.streetwear.model.Reclamacion;
 import pe.edu.utp.streetwear.repository.CategoriaRepository;
 import pe.edu.utp.streetwear.repository.MarcaRepository;
 import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
+import pe.edu.utp.streetwear.repository.ReclamacionRepository;
 import pe.edu.utp.streetwear.service.CatalogoService;
 import pe.edu.utp.streetwear.service.UsuarioService;
+import org.springframework.data.domain.Sort;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -23,6 +27,7 @@ public class AdminController {
     private final MarcaRepository marcaRepository;
     private final MensajeContactoRepository mensajeContactoRepository;
     private final UsuarioService usuarioService;
+    private final ReclamacionRepository reclamacionRepository;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -70,9 +75,13 @@ public class AdminController {
 
     @GetMapping("/mensajes")
     public String bandejaMensajes(Model model) {
+
         model.addAttribute("mensajesPendientes", mensajeContactoRepository.findByEstado("PENDIENTE"));
-        model.addAttribute("reclamos", mensajeContactoRepository.findByAsunto("reclamo"));
-        return "admin/bandeja-mensajes"; // Vista que crearemos después para el panel
+
+        List<Reclamacion> listaReclamos = reclamacionRepository.findAll(Sort.by(Sort.Direction.DESC, "fechaRegistro"));
+        model.addAttribute("reclamaciones", listaReclamos);
+
+        return "admin/bandeja-mensajes";
     }
 
     @GetMapping("/ventas")
@@ -83,7 +92,6 @@ public class AdminController {
 
     @GetMapping("/clientes")
     public String verClientes(Model model) {
-        // Fíjate en la "u" minúscula de usuarioService
         model.addAttribute("clientes", usuarioService.listarTodos());
         return "admin/clientes";
     }

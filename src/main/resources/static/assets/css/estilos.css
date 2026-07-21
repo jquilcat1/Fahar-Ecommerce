@@ -38,7 +38,7 @@ main {
     background-image: none !important;
 }
 
-/* 1. Botón "Ver Catálogo" Dinámico */
+/* Botón con efecto de transición y flecha */
 .btn-pro {
     transition: all 0.4s ease;
     display: inline-flex;
@@ -63,11 +63,11 @@ main {
     margin-left: 8px !important;
 }
 
-/* 2. Tarjetas de Categoría (Efecto Hover 3D) */
+/* Efecto hover para tarjetas */
 .card-hover {
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
     border-radius: 12px;
-    overflow: hidden; /* Mantiene la imagen dentro de los bordes curvos */
+    overflow: hidden;
 }
 .card-hover:hover {
     transform: translateY(-15px);
@@ -75,20 +75,20 @@ main {
     z-index: 10;
 }
 
-/* 3. Zoom interno de la imagen de la tarjeta */
+/* Efecto de zoom en la imagen de la tarjeta */
 .card-hover .card-img {
     transition: transform 0.7s ease;
 }
 .card-hover:hover .card-img {
-    transform: scale(1.1); /* Efecto de acercamiento lento */
+    transform: scale(1.1); 
 }
 
-/* 4. Tipografía elegante para títulos */
+/* Texto con espaciado amplio */
 .tracking-wide {
     letter-spacing: 2px;
 }
 
-/* Evitar el borde y check verde en los elementos select (Desplegables) */
+/* Estilos para los elementos select validados */
 .was-validated .form-select:valid, 
 .form-select.is-valid {
     border-color: var(--bs-border-color) !important;
@@ -119,7 +119,7 @@ main {
     box-shadow: 0 .25rem .5rem rgba(0,0,0,.15);
 }
 
-/* Botones Anterior/Siguiente desactivados */
+/* Botones desactivados */
 .pagination .page-item.disabled .page-link {
     background-color: #f8f9fa;
     color: #adb5bd;

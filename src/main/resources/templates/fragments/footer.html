@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <th:block th:fragment="footer-modales">
+      <div
+        class="modal fade"
+        id="modalTerminos"
+        tabindex="-1"
+        aria-labelledby="modalTerminosLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+              <h5 class="modal-title fw-bold" id="modalTerminosLabel">
+                Términos y Condiciones
+              </h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body text-muted small">
+              <h6 class="fw-bold text-dark">1. Aceptación de los Términos</h6>
+              <p>
+                Al acceder y utilizar el sitio web de FAHAR Streetwear, aceptas
+                estar sujeto a estos términos y condiciones...
+              </p>
+              <h6 class="fw-bold text-dark mt-3">2. Compras y Pagos</h6>
+              <p>Todos los precios están en Soles (PEN) e incluyen IGV...</p>
+              <h6 class="fw-bold text-dark mt-3">3. Propiedad Intelectual</h6>
+              <p>
+                Todo el contenido visual, fotografías y logotipos son propiedad
+                exclusiva de FAHAR...
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-dark w-100"
+                data-bs-dismiss="modal"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="modalPoliticas"
+        tabindex="-1"
+        aria-labelledby="modalPoliticasLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+              <h5 class="modal-title fw-bold" id="modalPoliticasLabel">
+                Políticas y Privacidad
+              </h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body text-muted small">
+              <h6 class="fw-bold text-dark">1. Privacidad de Datos</h6>
+              <p>FAHAR Streetwear se compromete a proteger tu privacidad...</p>
+              <h6 class="fw-bold text-dark mt-3">
+                2. Política de Devoluciones
+              </h6>
+              <p>
+                Aceptamos cambios y devoluciones dentro de los
+                <strong>7 días calendario</strong>...
+              </p>
+              <h6 class="fw-bold text-dark mt-3">
+                3. Artículos no retornables
+              </h6>
+              <p>
+                Por motivos de higiene, no se aceptan devoluciones de
+                accesorios...
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-dark w-100"
+                data-bs-dismiss="modal"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="bg-dark text-white pt-5 pb-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <h5 class="fw-bold">FAHAR</h5>
+              <p class="text-secondary small">
+                La tienda streetwear de referencia en Lima. Autenticidad y
+                comunidad desde 2021.
+              </p>
+            </div>
+            <div class="col-md-4 mb-3">
+              <h5 class="fw-bold">Atención al Cliente</h5>
+              <ul class="list-unstyled text-secondary small">
+                <li>
+                  <a
+                    th:href="@{/terminos}"
+                    class="text-decoration-none text-secondary"
+                  >
+                    Términos y Condiciones
+                  </a>
+                </li>
+                <li>
+                  <a
+                    th:href="@{/politicas}"
+                    class="text-decoration-none text-secondary"
+                  >
+                    Políticas de Devolución
+                  </a>
+                </li>
+                <li>
+                  <a
+                    th:href="@{/reclamaciones}"
+                    class="text-decoration-none text-secondary"
+                  >
+                    Libro de Reclamaciones
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+              <h5 class="fw-bold">Contacto</h5>
+              <ul class="list-unstyled text-secondary small">
+                <li>
+                  <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
+                  Borja
+                </li>
+                <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
+                <li>
+                  <i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe
+                </li>
+                <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="text-secondary" />
+          <div class="text-center text-secondary small">
+            &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>
+    </th:block>
+  </body>
+</html>

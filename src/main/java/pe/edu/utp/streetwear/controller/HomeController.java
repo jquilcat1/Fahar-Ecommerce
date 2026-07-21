@@ -12,6 +12,7 @@ import pe.edu.utp.streetwear.model.MensajeContacto;
 import pe.edu.utp.streetwear.repository.CategoriaRepository;
 import pe.edu.utp.streetwear.repository.MarcaRepository;
 import pe.edu.utp.streetwear.repository.MensajeContactoRepository;
+import pe.edu.utp.streetwear.repository.ReclamacionRepository;
 import pe.edu.utp.streetwear.model.Producto;
 import pe.edu.utp.streetwear.service.CatalogoService;
 import pe.edu.utp.streetwear.service.InteraccionService;
@@ -30,10 +31,9 @@ public class HomeController {
     private final InteraccionService interaccionService;
     private final ProductoService productoService;
     private final MensajeContactoRepository mensajeRepository;
-
-    // NUEVAS INYECCIONES PARA LOS FILTROS DINÁMICOS
     private final CategoriaRepository categoriaRepository;
     private final MarcaRepository marcaRepository;
+    private final ReclamacionRepository reclamacionRepository;
 
     @GetMapping("/")
     public String inicio(Model model) {
@@ -55,12 +55,10 @@ public class HomeController {
 
         model.addAttribute("productosPage", productosPage);
 
-        // Devolvemos los filtros seleccionados
         model.addAttribute("categoriasSeleccionadas", categorias);
         model.addAttribute("marcasSeleccionadas", marcas);
         model.addAttribute("sortSeleccionado", sort);
 
-        // ENVIAMOS TODAS LAS CATEGORÍAS Y MARCAS DE LA BD A LA VISTA
         model.addAttribute("listaCategorias", categoriaRepository.findAll());
         model.addAttribute("listaMarcas", marcaRepository.findAll());
 
@@ -104,5 +102,63 @@ public class HomeController {
                 "Tu mensaje ha sido enviado correctamente. Te contactaremos pronto.");
 
         return "redirect:/contacto";
+    }
+
+    @GetMapping("/terminos")
+    public String mostrarTerminos() {
+        return "terminos";
+    }
+
+    @GetMapping("/politicas")
+    public String mostrarPoliticas() {
+        return "politicas";
+    }
+
+    @GetMapping("/reclamaciones")
+    public String mostrarLibroReclamaciones() {
+        return "libro-reclamaciones";
+    }
+
+    @PostMapping("/reclamaciones/guardar")
+    public String guardarReclamo(
+            @RequestParam("nombres") String nombres,
+            @RequestParam("apellidos") String apellidos,
+            @RequestParam("tipoDocumento") String tipoDocumento,
+            @RequestParam("numeroDocumento") String numeroDocumento,
+            @RequestParam("direccion") String direccion,
+            @RequestParam("telefono") String telefono,
+            @RequestParam("correo") String correo,
+            @RequestParam(value = "tipoBien", required = false) String tipoBien,
+            @RequestParam(value = "montoReclamado", required = false) Double montoReclamado,
+            @RequestParam(value = "detalleBien", required = false) String detalleBien,
+            @RequestParam("tipoReclamo") String tipoReclamo,
+            @RequestParam("detalleReclamo") String detalleReclamo,
+            @RequestParam("pedidoConsumidor") String pedidoConsumidor,
+            RedirectAttributes redirectAttributes) {
+
+        pe.edu.utp.streetwear.model.Reclamacion nuevoReclamo = new pe.edu.utp.streetwear.model.Reclamacion();
+
+        nuevoReclamo.setNombres(nombres);
+        nuevoReclamo.setApellidos(apellidos);
+        nuevoReclamo.setTipoDocumento(tipoDocumento);
+        nuevoReclamo.setNumeroDocumento(numeroDocumento);
+        nuevoReclamo.setDireccion(direccion);
+        nuevoReclamo.setTelefono(telefono);
+        nuevoReclamo.setCorreo(correo);
+        nuevoReclamo.setTipoBien(tipoBien);
+        nuevoReclamo.setMontoReclamado(montoReclamado);
+        nuevoReclamo.setDetalleBien(detalleBien);
+        nuevoReclamo.setTipoReclamo(tipoReclamo);
+        nuevoReclamo.setDetalleReclamo(detalleReclamo);
+        nuevoReclamo.setPedidoConsumidor(pedidoConsumidor);
+
+        reclamacionRepository.save(nuevoReclamo);
+
+        redirectAttributes.addFlashAttribute("exito",
+                "Su " + tipoReclamo.toLowerCase() + " ha sido registrado exitosamente con el número de seguimiento #"
+                        + nuevoReclamo.getId()
+                        + ". Nos comunicaremos con usted en un plazo máximo de 15 días hábiles al correo: " + correo);
+
+        return "redirect:/reclamaciones";
     }
 }

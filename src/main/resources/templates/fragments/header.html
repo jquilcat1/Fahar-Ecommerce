@@ -1,0 +1,192 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <body>
+    <!-- FRAGMENTO: navbar-carrito -->
+    <th:block th:fragment="navbar-carrito">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+          <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/catalogo}">Tienda</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/contacto}">Contacto</a>
+              </li>
+            </ul>
+            <div class="d-flex">
+              <a
+                sec:authorize="isAnonymous()"
+                th:href="@{/login}"
+                class="text-white me-3 fs-5"
+                title="Iniciar Sesión"
+              >
+                <i class="bi bi-person-circle"></i>
+              </a>
+              <a
+                sec:authorize="hasRole('ADMIN')"
+                th:href="@{/admin/productos}"
+                class="text-white me-3 fs-5"
+                title="Panel de Control"
+              >
+                <i class="bi bi-person-circle"></i>
+              </a>
+              <a
+                sec:authorize="hasRole('CLIENTE')"
+                th:href="@{/perfil}"
+                class="text-white me-3 fs-5"
+                title="Mi Perfil"
+              >
+                <i class="bi bi-person-circle"></i>
+              </a>
+              <a
+                sec:authorize="!hasRole('ADMIN')"
+                href="#"
+                class="text-white fs-5"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#carritoOffcanvas"
+                title="Carrito"
+              >
+                <i class="bi bi-bag"></i>
+                <span
+                  th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+                  class="position-absolute top-10 translate-middle p-1 bg-danger border border-light rounded-circle"
+                >
+                  <span class="visually-hidden">Nuevos items</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Offcanvas del Carrito -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
+        <div class="offcanvas-header bg-dark text-white">
+          <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"
+          ></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+          <div
+            th:if="${session.carrito == null or session.carrito.isEmpty()}"
+            class="text-center mt-5"
+          >
+            <i class="bi bi-cart-x text-muted" style="font-size: 4rem"></i>
+            <p class="text-muted mt-3">Tu carrito está vacío.</p>
+          </div>
+          <div
+            th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+            class="flex-grow-1 overflow-auto"
+          >
+            <div
+              class="card mb-3 border-0 shadow-sm"
+              th:each="item : ${session.carrito}"
+            >
+              <div class="row g-0 align-items-center p-2">
+                <div class="col-3">
+                  <img
+                    th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
+                    class="img-fluid rounded"
+                    alt="Prenda"
+                  />
+                </div>
+                <div class="col-9 px-3">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <p
+                      class="fw-bold mb-0 text-truncate"
+                      style="max-width: 80%"
+                      th:text="${item.nombre}"
+                    >
+                      Nombre Prenda
+                    </p>
+                    <form
+                      th:action="@{/carrito/eliminar}"
+                      method="post"
+                      class="m-0 p-0"
+                    >
+                      <input
+                        type="hidden"
+                        name="productoId"
+                        th:value="${item.productoId}"
+                      />
+                      <input
+                        type="hidden"
+                        name="talla"
+                        th:value="${item.talla}"
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-sm text-danger p-0"
+                        title="Quitar del carrito"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                  <small
+                    class="text-muted d-block"
+                    th:text="${item.marca + ' | ' + item.talla}"
+                    >Marca | Talla</small
+                  >
+                  <div
+                    class="d-flex justify-content-between align-items-center mt-2"
+                  >
+                    <span class="fw-bold"
+                      >S/ <span th:text="${item.precio}">0.00</span></span
+                    >
+                    <span class="badge bg-secondary text-white"
+                      >x<span th:text="${item.cantidad}">1</span></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            th:if="${session.carrito != null and !session.carrito.isEmpty()}"
+            class="mt-auto pt-3 border-top"
+          >
+            <div
+              class="d-flex justify-content-between align-items-center mb-3 px-2"
+            >
+              <span class="fw-bold text-muted">Subtotal:</span>
+              <span
+                class="fw-bold fs-5"
+                th:text="${'S/ ' + session.totalCarrito}"
+                >S/ 0.00</span
+              >
+            </div>
+            <a
+              th:href="@{/carrito/checkout}"
+              class="btn btn-dark w-100 fw-bold py-2"
+              >Proceder al Pago</a
+            >
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </body>
+</html>

@@ -20,7 +20,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final UsuarioMapper usuarioMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     public List<UsuarioDTO> listarTodos() {
@@ -35,13 +34,19 @@ public class UsuarioService {
         return usuarioMapper.toDTO(usuario);
     }
 
+    // MÉTODO AGREGADO: Devuelve la entidad Usuario buscando por su correo
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByCorreo(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con correo: " + email));
+    }
+
     public UsuarioDTO guardarUsuario(UsuarioDTO dto) {
         Usuario usuario = usuarioMapper.toModel(dto);
 
         Integer rolId = (dto.getRolId() != null) ? dto.getRolId() : 2;
         usuario.setRol(rolRepository.findById(rolId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rol no válido")));
-                
+
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Usuario guardado = usuarioRepository.save(usuario);

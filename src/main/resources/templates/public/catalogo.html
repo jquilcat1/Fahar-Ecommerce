@@ -20,211 +20,14 @@
   </head>
 
   <body class="bg-light d-flex flex-column min-vh-100">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-      <div class="container">
-        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/}">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" th:href="@{/catalogo}">Tienda</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/contacto}">Contacto</a>
-            </li>
-          </ul>
-          <div class="d-flex">
-            <a
-              sec:authorize="isAnonymous()"
-              th:href="@{/login}"
-              class="text-white me-3 fs-5"
-              title="Iniciar Sesión"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-
-            <a
-              sec:authorize="hasRole('ADMIN')"
-              th:href="@{/admin/productos}"
-              class="text-white me-3 fs-5"
-              title="Panel de Control"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-
-            <a
-              sec:authorize="hasRole('CLIENTE')"
-              th:href="@{/perfil}"
-              class="text-white me-3 fs-5"
-              title="Mi Perfil"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-
-            <a
-              sec:authorize="!hasRole('ADMIN')"
-              href="#"
-              class="text-white fs-5"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#carritoOffcanvas"
-              title="Carrito"
-            >
-              <i class="bi bi-bag"></i>
-              <!-- Indicador de items en el carrito (Opcional visual) -->
-              <span
-                th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-                class="position-absolute top-10 translate-middle p-1 bg-danger border border-light rounded-circle"
-              >
-                <span class="visually-hidden">Nuevos items</span>
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Offcanvas del Carrito -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
-      <div class="offcanvas-header bg-dark text-white">
-        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="offcanvas"
-        ></button>
-      </div>
-      <div class="offcanvas-body d-flex flex-column">
-        <!-- Si el carrito está vacío -->
-        <div
-          th:if="${session.carrito == null or session.carrito.isEmpty()}"
-          class="text-center mt-5"
-        >
-          <i class="bi bi-cart-x text-muted" style="font-size: 4rem"></i>
-          <p class="text-muted mt-3">Tu carrito está vacío.</p>
-        </div>
-
-        <!-- Si hay prendas en la sesión -->
-        <div
-          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-          class="flex-grow-1 overflow-auto"
-        >
-          <div
-            class="card mb-3 border-0 shadow-sm"
-            th:each="item : ${session.carrito}"
-          >
-            <div class="row g-0 align-items-center p-2">
-              <div class="col-3">
-                <img
-                  th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
-                  class="img-fluid rounded"
-                  alt="Prenda"
-                />
-              </div>
-              <div class="col-9 px-3">
-                <!-- Título y botón de eliminar en la misma línea -->
-                <div class="d-flex justify-content-between align-items-start">
-                  <p
-                    class="fw-bold mb-0 text-truncate"
-                    style="max-width: 80%"
-                    th:text="${item.nombre}"
-                  >
-                    Nombre Prenda
-                  </p>
-
-                  <!-- BOTÓN ELIMINAR -->
-                  <form
-                    th:action="@{/carrito/eliminar}"
-                    method="post"
-                    class="m-0 p-0"
-                  >
-                    <input
-                      type="hidden"
-                      name="productoId"
-                      th:value="${item.productoId}"
-                    />
-                    <input
-                      type="hidden"
-                      name="talla"
-                      th:value="${item.talla}"
-                    />
-                    <button
-                      type="submit"
-                      class="btn btn-sm text-danger p-0"
-                      title="Quitar del carrito"
-                    >
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form>
-                </div>
-
-                <small
-                  class="text-muted d-block"
-                  th:text="${item.marca + ' | ' + item.talla}"
-                  >Marca | Talla</small
-                >
-
-                <div
-                  class="d-flex justify-content-between align-items-center mt-2"
-                >
-                  <span class="fw-bold"
-                    >S/ <span th:text="${item.precio}">0.00</span></span
-                  >
-                  <span class="badge bg-secondary text-white"
-                    >x<span th:text="${item.cantidad}">1</span></span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer con el TOTAL -->
-        <div
-          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-          class="mt-auto pt-3 border-top"
-        >
-          <!-- FILA DEL TOTAL -->
-          <div
-            class="d-flex justify-content-between align-items-center mb-3 px-2"
-          >
-            <span class="fw-bold text-muted">Subtotal:</span>
-            <span class="fw-bold fs-5" th:text="${'S/ ' + session.totalCarrito}"
-              >S/ 0.00</span
-            >
-          </div>
-
-          <a
-            th:href="@{/carrito/checkout}"
-            class="btn btn-dark w-100 fw-bold py-2"
-          >
-            Proceder al Pago
-          </a>
-        </div>
-      </div>
-    </div>
+    <div th:replace="~{fragments/header :: navbar-carrito}"></div>
 
     <main class="container my-5 flex-grow-1">
-      <!-- Conectaremos los filtros a este ID mediante el atributo form="formFiltros" -->
       <form id="formFiltros" th:action="@{/catalogo}" method="GET"></form>
 
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Toda la colección</h2>
 
-        <!-- Select Dinámico conectado al form -->
         <select
           name="sort"
           form="formFiltros"
@@ -244,13 +47,10 @@
       </div>
 
       <div class="row">
-        <!-- BARRA LATERAL DE FILTROS -->
         <aside class="col-md-3 mb-4">
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <h5 class="fw-bold mb-3">Filtros</h5>
-
-              <!-- CATEGORÍAS DINÁMICAS -->
               <h6 class="fw-bold mt-4 mb-2">Categorías</h6>
               <div class="form-check" th:each="cat : ${listaCategorias}">
                 <input
@@ -269,10 +69,8 @@
                 ></label>
               </div>
 
-              <!-- MARCAS DINÁMICAS CON "VER MÁS" -->
               <h6 class="fw-bold mt-4 mb-2">Marcas</h6>
 
-              <!-- Mostrar solo las primeras 5 marcas -->
               <div
                 th:each="marca, stat : ${listaMarcas}"
                 th:if="${stat.index < 5}"
@@ -294,7 +92,6 @@
                 ></label>
               </div>
 
-              <!-- Acordeón oculto para el resto de las marcas (a partir de la 6ta) -->
               <div
                 class="collapse"
                 id="collapseMarcas"
@@ -322,14 +119,12 @@
                 </div>
               </div>
 
-              <!-- Botón Toggle Ver Más -->
               <button
                 th:if="${listaMarcas.size() > 5}"
                 class="btn btn-link btn-sm text-dark text-decoration-none p-0 mt-2 fw-bold"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseMarcas"
-                card-footer
                 aria-expanded="false"
                 aria-controls="collapseMarcas"
                 onclick="
@@ -353,19 +148,16 @@
           </div>
         </aside>
 
-        <!-- SECCIÓN DE PRODUCTOS -->
         <section class="col-md-9">
           <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="producto : ${productosPage.content}">
               <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                <!-- 1. CONTENEDOR DE IMAGEN CLICKABLE CON EFECTO HOVER -->
                 <a
                   th:href="@{/producto/{id}(id=${producto.id})}"
                   class="d-block position-relative bg-light"
                   style="aspect-ratio: 1/1"
                 >
-                  <!-- Foto 2 (Secundaria / Fondo) -->
-                  <!-- Si el producto no tiene foto 2, repetimos la 1 para que no quede en blanco -->
+
                   <img
                     th:src="${producto.imagenUrl2 != null ? producto.imagenUrl2 : (producto.imagenUrl != null ? producto.imagenUrl : '/assets/img/Yeezy.jpg')}"
                     class="position-absolute top-0 start-0 w-100 h-100"
@@ -373,8 +165,6 @@
                     alt="Producto Hover"
                   />
 
-                  <!-- Foto 1 (Principal / Frente) -->
-                  <!-- Al pasar el mouse (onmouseover), su opacidad baja a 0 en medio segundo -->
                   <img
                     th:src="${producto.imagenUrl != null ? producto.imagenUrl : '/assets/img/Yeezy.jpg'}"
                     class="position-relative w-100 h-100 card-img-top"
@@ -388,8 +178,6 @@
                   />
                 </a>
 
-                <!-- 2. CUERPO DE LA TARJETA TAMBIÉN CLICKABLE -->
-                <!-- Usamos th:onclick para que toda la zona de texto te mande al detalle -->
                 <div
                   class="card-body text-center"
                   style="cursor: pointer"
@@ -412,9 +200,7 @@
                   </p>
                 </div>
 
-                <!-- BOTONES DE ACCIÓN -->
                 <div class="card-footer bg-white border-0 text-center pb-3">
-                  <!-- VISTA PARA CLIENTES / PÚBLICO -->
                   <div sec:authorize="!hasRole('ADMIN')">
                     <a
                       th:href="@{/producto/{id}(id=${producto.id})}"
@@ -434,7 +220,6 @@
                     </form>
                   </div>
 
-                  <!-- VISTA PARA EL ADMINISTRADOR -->
                   <div sec:authorize="hasRole('ADMIN')">
                     <a
                       th:href="@{/producto/{id}(id=${producto.id})}"
@@ -454,7 +239,6 @@
               </div>
             </div>
 
-            <!-- Alerta si no hay productos que coincidan con los filtros -->
             <div class="col-12" th:if="${productosPage.isEmpty()}">
               <div
                 class="alert alert-light text-center py-5 shadow-sm border-0"
@@ -475,7 +259,6 @@
             </div>
           </div>
 
-          <!-- Paginación dinámica manteniendo los filtros en la URL -->
           <nav th:if="${productosPage.totalPages > 1}" class="mt-5">
             <ul class="pagination justify-content-center">
               <li
@@ -518,176 +301,7 @@
         </section>
       </div>
     </main>
-
-    <!-- MODAL: Términos y Condiciones -->
-    <div
-      class="modal fade"
-      id="modalTerminos"
-      tabindex="-1"
-      aria-labelledby="modalTerminosLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title fw-bold" id="modalTerminosLabel">
-              Términos y Condiciones
-            </h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body text-muted small">
-            <h6 class="fw-bold text-dark">1. Aceptación de los Términos</h6>
-            <p>
-              Al acceder y utilizar el sitio web de FAHAR Streetwear, aceptas
-              estar sujeto a estos términos y condiciones. Si no estás de
-              acuerdo con alguna parte, no podrás utilizar nuestros servicios.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">2. Compras y Pagos</h6>
-            <p>
-              Todos los precios están en Soles (PEN) e incluyen IGV. Nos
-              reservamos el derecho de modificar los precios en cualquier
-              momento. Las compras están sujetas a disponibilidad de stock.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">3. Propiedad Intelectual</h6>
-            <p>
-              Todo el contenido visual, fotografías y logotipos son propiedad
-              exclusiva de FAHAR o de sus respectivas marcas afiliadas. Queda
-              prohibida su reproducción sin autorización.
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-dark w-100"
-              data-bs-dismiss="modal"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL: Políticas de Privacidad y Devolución -->
-    <div
-      class="modal fade"
-      id="modalPoliticas"
-      tabindex="-1"
-      aria-labelledby="modalPoliticasLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title fw-bold" id="modalPoliticasLabel">
-              Políticas y Privacidad
-            </h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body text-muted small">
-            <h6 class="fw-bold text-dark">1. Privacidad de Datos</h6>
-            <p>
-              FAHAR Streetwear se compromete a proteger tu privacidad. Los datos
-              personales solicitados (nombre, teléfono, correo) son utilizados
-              estrictamente para procesar tus pedidos y mejorar tu experiencia
-              de compra, bajo la Ley de Protección de Datos Personales (Ley N°
-              29733).
-            </p>
-            <h6 class="fw-bold text-dark mt-3">2. Política de Devoluciones</h6>
-            <p>
-              Aceptamos cambios y devoluciones dentro de los
-              <strong>7 días calendario</strong> posteriores a la recepción de
-              tu pedido. La prenda debe estar en su estado original, sin uso,
-              sin lavado y con todas sus etiquetas y empaques originales.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">3. Artículos no retornables</h6>
-            <p>
-              Por motivos de higiene, no se aceptan devoluciones de accesorios,
-              ropa interior o calcetines, salvo por defectos de fábrica.
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-dark w-100"
-              data-bs-dismiss="modal"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">FAHAR</h5>
-            <p class="text-secondary small">
-              La tienda streetwear de referencia en Lima. Autenticidad y
-              comunidad desde 2021.
-            </p>
-          </div>
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">Atención al Cliente</h5>
-            <ul class="list-unstyled text-secondary small">
-              <li>
-                <a
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalTerminos"
-                  class="text-decoration-none text-secondary"
-                  >Términos y Condiciones</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalPoliticas"
-                  class="text-decoration-none text-secondary"
-                  >Políticas de Devolución</a
-                >
-              </li>
-              <li>
-                <a
-                  th:href="@{/contacto(asunto='reclamo')}"
-                  class="text-decoration-none text-secondary"
-                  >Libro de Reclamaciones</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">Contacto</h5>
-            <ul class="list-unstyled text-secondary small">
-              <li>
-                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
-                Borja
-              </li>
-              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
-              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
-              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
-            </ul>
-          </div>
-        </div>
-        <hr class="text-secondary" />
-        <div class="text-center text-secondary small">
-          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
-        </div>
-      </div>
-    </footer>
+    <div th:replace="~{fragments/footer :: footer-modales}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/assets/js/app.js}"></script>

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +30,9 @@ public class Usuario {
 
     @Column(length = 20)
     private String telefono;
+
+    @Column(length = 20)
+    private String dni;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rol_id", nullable = false)

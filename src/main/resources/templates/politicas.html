@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Políticas de Privacidad y Devolución | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+  </head>
+
+  <body class="bg-light py-5">
+    <div class="container" style="max-width: 800px">
+      <div class="mb-4">
+        <button
+          onclick="history.back()"
+          class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold shadow-sm"
+        >
+          <i class="bi bi-arrow-left me-2"></i> Volver
+        </button>
+      </div>
+
+      <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+        <div class="text-center border-bottom pb-4 mb-4">
+          <h1 class="fw-bold fs-2 text-dark">FAHAR STREETWEAR</h1>
+          <p class="text-muted small text-uppercase tracking-wider mb-0">
+            Políticas de Privacidad, Protección de Datos y Devoluciones
+          </p>
+          <span class="badge bg-dark mt-2">Marco legal vigente</span>
+        </div>
+
+        <div
+          class="text-secondary"
+          style="font-size: 0.95rem; line-height: 1.8"
+        >
+          <h5 class="fw-bold text-dark mt-4">
+            1. Política de Protección de Datos Personales (Ley N° 29733)
+          </h5>
+          <p>
+            En cumplimiento de la Ley N° 29733 (Ley de Protección de Datos
+            Personales) y su Reglamento, FAHAR Streetwear garantiza la absoluta
+            confidencialidad en el tratamiento de los datos recolectados en el
+            proceso de registro y checkout (nombres, DNI, direcciones en Lima
+            Metropolitana y teléfonos de contacto). Los datos recopilados son
+            almacenados en un banco de datos propio y se emplean exclusivamente
+            para la ejecución, validación y despacho de tus pedidos, así como
+            para el envío de alertas de nuevos drops y ofertas comerciales si el
+            usuario dio su consentimiento explícito.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">2. Uso de Cookies y Sesiones</h5>
+          <p>
+            Nuestro sistema utiliza almacenamiento en sesión y cookies técnicas
+            gestionadas mediante Spring Security para mantener activo el carrito
+            de compras del usuario y validar sus credenciales de acceso (Roles:
+            ADMIN / CLIENTE). Ninguna información de carácter comercial o
+            privado es comercializada o cedida a terceras partes ajenas a la
+            cadena logística de entrega.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">
+            3. Políticas de Cambios y Devoluciones
+          </h5>
+          <p>
+            Para mantener altos estándares de exclusividad, aceptamos
+            solicitudes de cambio de talla o devolución de prendas dentro de un
+            plazo máximo de <strong>7 (siete) días calendario</strong> contados
+            a partir de la fecha de recepción o recojo en tienda del producto.
+            Para que proceda cualquier solicitud, la prenda debe cumplir
+            rigurosamente con los siguientes requisitos:
+          </p>
+          <ul class="ps-3 mb-3">
+            <li>
+              Estar en perfecto estado, sin muestras de uso, desgaste ni lavado.
+            </li>
+            <li>
+              Conservar las etiquetas originales adheridas y el empaque
+              corporativo intacto.
+            </li>
+            <li>
+              Presentar el comprobante de pago físico o digital (orden de compra
+              #FA).
+            </li>
+          </ul>
+
+          <h5 class="fw-bold text-dark mt-4">
+            4. Excepciones y Artículos No Retornables
+          </h5>
+          <p>
+            Por estrictas normas de higiene y seguridad sanitaria en la
+            industria del streetwear,
+            <strong
+              >no se aceptan cambios ni devoluciones de accesorios, ropa
+              interior, calcetines o mascarillas</strong
+            >, salvo que presenten fallas de fábrica comprobadas al momento de
+            la entrega. Los gastos de envío asociados a devoluciones por motivos
+            ajenos a defectos de fabricación correrán por cuenta del cliente.
+          </p>
+        </div>
+
+        <div class="text-center border-top pt-4 mt-5">
+          <p class="text-muted small mb-3">
+            ¿Tienes inconvenientes con un pedido reciente?
+          </p>
+          <a
+            th:href="@{/contacto}"
+            class="btn btn-dark fw-bold px-4 py-2 rounded-pill"
+            >Iniciar un soporte de cambio</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

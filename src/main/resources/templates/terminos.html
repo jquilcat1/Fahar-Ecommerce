@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Términos y Condiciones | FAHAR Streetwear</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+  </head>
+
+  <body class="bg-light py-5">
+    <div class="container" style="max-width: 800px">
+      <div class="mb-4">
+        <button
+          onclick="history.back()"
+          class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold shadow-sm"
+        >
+          <i class="bi bi-arrow-left me-2"></i> Volver
+        </button>
+      </div>
+
+      <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+        <div class="text-center border-bottom pb-4 mb-4">
+          <h1 class="fw-bold fs-2 text-dark">FAHAR STREETWEAR</h1>
+          <p class="text-muted small text-uppercase tracking-wider mb-0">
+            Términos y Condiciones Generales de Uso y Contratación
+          </p>
+          <span class="badge bg-dark mt-2"
+            >Última actualización: Julio 2026</span
+          >
+        </div>
+
+        <div
+          class="text-secondary"
+          style="font-size: 0.95rem; line-height: 1.8"
+        >
+          <h5 class="fw-bold text-dark mt-4">1. Disposiciones Generales</h5>
+          <p>
+            Bienvenido al portal web oficial de
+            <strong>FAHAR Streetwear</strong> (en adelante, "la tienda" o "el
+            sitio web"), operado en Lima, Perú. El acceso y uso de nuestro sitio
+            web, así como la adquisición de cualquiera de nuestras prendas y
+            accesorios urbanos (sneakers, hoodies, t-shirts, etc.), están
+            sujetos a la aceptación incondicional de los presentes Términos y
+            Condiciones. Si el usuario no está de acuerdo con los mismos, se le
+            solicita abstenerse de navegar o realizar transacciones comerciales
+            en nuestra plataforma.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">
+            2. Capacidad Legal y Cuentas de Usuario
+          </h5>
+          <p>
+            Los servicios de FAHAR están disponibles únicamente para personas
+            naturales que cuenten con plena capacidad legal para contratar. Para
+            procesar compras o acceder a drops exclusivos, el usuario deberá
+            registrarse proporcionando información veraz, exacta y actualizada
+            (nombre, DNI, teléfono peruano y correo electrónico). El usuario es
+            el único responsable de la confidencialidad de su contraseña y de
+            cualquier actividad generada bajo su cuenta en Spring Security.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">
+            3. Proceso de Compra, Stock y Precios
+          </h5>
+          <p>
+            Todos los precios publicados en el catálogo se encuentran expresados
+            en Soles (PEN) e incluyen el Impuesto General a las Ventas (IGV).
+            FAHAR realiza auditorías periódicas de inventario; sin embargo,
+            debido a la alta rotación de las colecciones de streetwear, el stock
+            está sujeto a disponibilidad en tiempo real al momento de confirmar
+            la transacción en el módulo de pago. Nos reservamos el derecho de
+            modificar precios, catálogos y restricciones de unidades por cliente
+            sin previo aviso.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">
+            4. Pasarelas de Pago y Seguridad Transaccional
+          </h5>
+          <p>
+            Las transacciones efectuadas mediante tarjeta de crédito o débito se
+            procesan a través de pasarelas certificadas y seguras (como PayU
+            Latam). FAHAR no almacena información financiera sensible (números
+            de tarjeta o códigos CVV) en sus bases de datos locales MySQL. El
+            procesamiento de pagos mediante transferencia directa, Yape o Plin
+            requiere la validación manual o sistémica en un plazo prudencial
+            para proceder con el despacho logístico.
+          </p>
+
+          <h5 class="fw-bold text-dark mt-4">
+            5. Propiedad Intelectual e Industrial
+          </h5>
+          <p>
+            Todo el contenido albergado en este sitio web —incluyendo de manera
+            enunciativa mas no limitativa: diseños gráficos, logotipos,
+            tipografías, material fotográfico de interiores, catálogos de marcas
+            afiliadas y código fuente— es propiedad exclusiva de FAHAR
+            Streetwear o cuenta con las licencias comerciales autorizadas. Queda
+            terminantemente prohibida la reproducción, distribución,
+            modificación o explotación comercial sin el consentimiento expreso y
+            por escrito de la gerencia.
+          </p>
+        </div>
+
+        <div class="text-center border-top pt-4 mt-5">
+          <p class="text-muted small mb-3">
+            ¿Tienes dudas legales o consultas sobre nuestros drops?
+          </p>
+          <a
+            th:href="@{/contacto}"
+            class="btn btn-dark fw-bold px-4 py-2 rounded-pill"
+            >Contáctanos directamente</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

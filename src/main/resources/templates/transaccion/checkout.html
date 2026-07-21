@@ -17,634 +17,145 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
     <link rel="stylesheet" th:href="@{/assets/css/estilos.css}" />
+    <style>
+      .input-minimalist:focus {
+        box-shadow: none;
+        border-color: #000 !important;
+      }
+      .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-tabs .nav-link.active {
+        color: #000;
+        font-weight: bold;
+        border-bottom: 2px solid #000;
+        background: transparent;
+      }
+      .nav-tabs .nav-link:hover {
+        border-bottom: 2px solid #ccc;
+      }
+    </style>
   </head>
 
   <body class="bg-light d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-      <div class="container">
-        <a class="navbar-brand fw-bold fs-3" th:href="@{/}">FAHAR</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/}">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/catalogo}">Tienda</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/nosotros}">Sobre Nosotros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/contacto}">Contacto</a>
-            </li>
-          </ul>
-          <div class="d-flex">
-            <a
-              sec:authorize="isAnonymous()"
-              th:href="@{/login}"
-              class="text-white me-3 fs-5"
-              title="Iniciar Sesión"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-
-            <a
-              sec:authorize="hasRole('ADMIN')"
-              th:href="@{/admin/productos}"
-              class="text-white me-3 fs-5"
-              title="Panel de Control"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-
-            <a
-              sec:authorize="hasRole('CLIENTE')"
-              th:href="@{/perfil}"
-              class="text-white me-3 fs-5"
-              title="Mi Perfil"
-            >
-              <i class="bi bi-person-circle"></i>
-            </a>
-            <a
-              sec:authorize="!hasRole('ADMIN')"
-              href="#"
-              class="text-white fs-5"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#carritoOffcanvas"
-              title="Carrito"
-            >
-              <i class="bi bi-bag"></i>
-              <!-- Indicador de items en el carrito (Opcional visual) -->
-              <span
-                th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-                class="position-absolute top-10 translate-middle p-1 bg-danger border border-light rounded-circle"
-              >
-                <span class="visually-hidden">Nuevos items</span>
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Offcanvas del Carrito -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
-      <div class="offcanvas-header bg-dark text-white">
-        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="offcanvas"
-        ></button>
-      </div>
-      <div class="offcanvas-body d-flex flex-column">
-        <!-- Si el carrito está vacío -->
-        <div
-          th:if="${session.carrito == null or session.carrito.isEmpty()}"
-          class="text-center mt-5"
-        >
-          <i class="bi bi-cart-x text-muted" style="font-size: 4rem"></i>
-          <p class="text-muted mt-3">Tu carrito está vacío.</p>
-        </div>
-
-        <!-- Si hay prendas en la sesión -->
-        <div
-          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-          class="flex-grow-1 overflow-auto"
-        >
-          <div
-            class="card mb-3 border-0 shadow-sm"
-            th:each="item : ${session.carrito}"
-          >
-            <div class="row g-0 align-items-center p-2">
-              <div class="col-3">
-                <img
-                  th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
-                  class="img-fluid rounded"
-                  alt="Prenda"
-                />
-              </div>
-              <div class="col-9 px-3">
-                <!-- Título y botón de eliminar en la misma línea -->
-                <div class="d-flex justify-content-between align-items-start">
-                  <p
-                    class="fw-bold mb-0 text-truncate"
-                    style="max-width: 80%"
-                    th:text="${item.nombre}"
-                  >
-                    Nombre Prenda
-                  </p>
-
-                  <!-- BOTÓN ELIMINAR -->
-                  <form
-                    th:action="@{/carrito/eliminar}"
-                    method="post"
-                    class="m-0 p-0"
-                  >
-                    <input
-                      type="hidden"
-                      name="productoId"
-                      th:value="${item.productoId}"
-                    />
-                    <input
-                      type="hidden"
-                      name="talla"
-                      th:value="${item.talla}"
-                    />
-                    <button
-                      type="submit"
-                      class="btn btn-sm text-danger p-0"
-                      title="Quitar del carrito"
-                    >
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form>
-                </div>
-
-                <small
-                  class="text-muted d-block"
-                  th:text="${item.marca + ' | ' + item.talla}"
-                  >Marca | Talla</small
-                >
-
-                <div
-                  class="d-flex justify-content-between align-items-center mt-2"
-                >
-                  <span class="fw-bold"
-                    >S/ <span th:text="${item.precio}">0.00</span></span
-                  >
-                  <span class="badge bg-secondary text-white"
-                    >x<span th:text="${item.cantidad}">1</span></span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer con el TOTAL -->
-        <div
-          th:if="${session.carrito != null and !session.carrito.isEmpty()}"
-          class="mt-auto pt-3 border-top"
-        >
-          <!-- FILA DEL TOTAL -->
-          <div
-            class="d-flex justify-content-between align-items-center mb-3 px-2"
-          >
-            <span class="fw-bold text-muted">Subtotal:</span>
-            <span class="fw-bold fs-5" th:text="${'S/ ' + session.totalCarrito}"
-              >S/ 0.00</span
-            >
-          </div>
-
-          <a
-            th:href="@{/carrito/checkout}"
-            class="btn btn-dark w-100 fw-bold py-2"
-          >
-            Proceder al Pago
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas">
-      <div class="offcanvas-header bg-dark text-white">
-        <h5 class="offcanvas-title fw-bold">Tu Carrito</h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="offcanvas"
-        ></button>
-      </div>
-      <div class="offcanvas-body d-flex flex-column">
-        <p class="text-muted text-center mt-5">Tu carrito está vacío.</p>
-        <div class="mt-auto">
-          <a th:href="@{/carrito/checkout}" class="btn btn-dark w-100 disabled"
-            >Proceder al Pago</a
-          >
-        </div>
-      </div>
-    </div>
+    <div th:replace="~{fragments/header :: navbar-carrito}"></div>
 
     <main class="container my-5 flex-grow-1">
-      <h2 class="fw-bold mb-4">Finalizar Compra</h2>
-      <div class="row g-5">
-        <div class="col-md-8">
-          <h4 class="mb-3 fw-bold">Datos de Envío</h4>
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
 
+      <div class="row g-5">
+        <div class="col-lg-8">
           <form
+            id="checkoutForm"
             class="needs-validation"
             th:action="@{/carrito/procesar}"
             method="post"
+            novalidate
           >
-            <div class="row g-3">
-              <div class="col-sm-6">
-                <label class="form-label fw-bold">Nombre</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="nombre"
-                  placeholder="Tu nombre"
-                  required
-                  pattern="[A-Za-z áéíóúÁÉÍÓÚñÑ]+"
-                  title="Solo se permiten letras"
-                />
-              </div>
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+              <h4 class="mb-4 fw-bold">Método de entrega</h4>
 
-              <div class="col-sm-6">
-                <label class="form-label fw-bold">Apellido</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="apellido"
-                  placeholder="Tu apellido"
-                  required
-                  pattern="[A-Za-z áéíóúÁÉÍÓÚñÑ]+"
-                  title="Solo se permiten letras"
-                />
-              </div>
+              <ul class="nav nav-tabs mb-4" id="deliveryTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link active px-4"
+                    id="domicilio-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#domicilio"
+                    type="button"
+                    role="tab"
+                  >
+                    <i class="bi bi-house-door me-2"></i>A Domicilio
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link px-4"
+                    id="tienda-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#tienda"
+                    type="button"
+                    role="tab"
+                  >
+                    <i class="bi bi-shop me-2"></i>Recoger en Tienda
+                  </button>
+                </li>
+              </ul>
 
-              <div class="col-12">
-                <label class="form-label fw-bold">Dirección en Lima</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="direccion"
-                  placeholder="Av. Principal 123, Dpto 402"
-                  required
-                  minlength="5"
-                />
-              </div>
-
-              <div class="col-md-5">
-                <label class="form-label fw-bold">Distrito</label>
-                <select class="form-select" name="distrito" required>
-                  <option value="" selected disabled>Elegir distrito...</option>
-                  <option value="San Borja">San Borja</option>
-                  <option value="Miraflores">Miraflores</option>
-                  <option value="Surco">Surco</option>
-                  <option value="La Molina">La Molina</option>
-                  <option value="San Isidro">San Isidro</option>
-                  <option value="Barranco">Barranco</option>
-                  <option value="Lince">Lince</option>
-                  <option value="Jesús María">Jesús María</option>
-                  <option value="Pueblo Libre">Pueblo Libre</option>
-                  <option value="Chorrillos">Chorrillos</option>
-                  <option value="Magdalena del Mar">Magdalena del Mar</option>
-                  <option value="San Miguel">San Miguel</option>
-                </select>
-              </div>
-
-              <div class="col-md-7">
-                <label class="form-label fw-bold">Teléfono</label>
-                <input
-                  type="tel"
-                  class="form-control"
-                  name="telefono"
-                  placeholder="999888777"
-                  required
-                  pattern="9[0-9]{8}"
-                  title="Debe ser un número peruano válido de 9 dígitos empezando con 9"
-                />
+              <div class="tab-content" id="deliveryTabContent">
+                <div class="tab-pane fade show active" id="domicilio" role="tabpanel">
+                  <div class="row g-4 mt-1">
+                    <div class="col-md-6">
+                      <label class="form-label text-muted small fw-bold mb-0">Nombre de quien recibe <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control form-control-lg border-0 border-bottom rounded-0 px-0 bg-transparent input-minimalist" name="nombreRecibe" required />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label text-muted small fw-bold mb-0">DNI <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control form-control-lg border-0 border-bottom rounded-0 px-0 bg-transparent input-minimalist" name="dni" required pattern="[0-9]{8}" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label text-muted small fw-bold mb-0">Teléfono <span class="text-danger">*</span></label>
+                      <input type="tel" class="form-control form-control-lg border-0 border-bottom rounded-0 px-0 bg-transparent input-minimalist" name="telefono" required pattern="9[0-9]{8}" />
+                    </div>
+                    <div class="col-md-12">
+                      <label class="form-label text-muted small fw-bold mb-0">Dirección <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control form-control-lg border-0 border-bottom rounded-0 px-0 bg-transparent input-minimalist" name="direccion" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="tienda" role="tabpanel">
+                  <div class="alert alert-light border p-4 text-center text-muted mt-3">
+                    <i class="bi bi-geo-alt-fill fs-3 d-block mb-2 text-dark"></i>
+                    Recoge en: <strong>Av. Aviación 2340, San Borja, Lima.</strong>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <hr class="my-4" />
-
-            <h4 class="mb-3 fw-bold">Método de Pago</h4>
-            <div class="my-3">
-              <div class="form-check">
-                <input
-                  name="metodoPago"
-                  type="radio"
-                  class="form-check-input"
-                  id="credit"
-                  value="TARJETA"
-                  checked
-                  required
-                />
-                <label class="form-check-label" for="credit"
-                  >Tarjeta de Crédito / Débito</label
-                >
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+              <h4 class="mb-4 fw-bold">Método de pago</h4>
+              <div class="border rounded-3 p-3 mb-3">
+                <div class="form-check">
+                  <input name="metodoPago" type="radio" class="form-check-input" id="credit" value="TARJETA" checked required />
+                  <label class="form-check-label fw-bold" for="credit">Tarjeta / Yape / Plin (Mercado Pago)</label>
+                </div>
               </div>
-              <div class="form-check">
-                <input
-                  name="metodoPago"
-                  type="radio"
-                  class="form-check-input"
-                  id="transfer"
-                  value="TRANSFERENCIA"
-                  required
-                />
-                <label class="form-check-label" for="transfer"
-                  >Transferencia / Yape / Plin</label
-                >
+              <div class="border rounded-3 p-3">
+                <div class="form-check">
+                  <input name="metodoPago" type="radio" class="form-check-input" id="transfer" value="TRANSFERENCIA" required />
+                  <label class="form-check-label fw-bold" for="transfer">Transferencia Bancaria Directa</label>
+                </div>
               </div>
             </div>
-
-            <button
-              class="w-100 btn btn-dark btn-lg mt-4 fw-bold"
-              type="submit"
-              th:disabled="${session.carrito == null or #lists.isEmpty(session.carrito)}"
-            >
-              Confirmar y Pagar
-            </button>
           </form>
         </div>
 
-        <div class="col-md-4">
-          <div class="card p-4 bg-white border shadow-sm">
-            <h5 class="fw-bold mb-3">Resumen del Pedido</h5>
-
-            <ul class="list-group list-group-flush mb-3">
-              <!-- Caso: Carrito Vacío -->
-              <li
-                th:if="${session.carrito == null or #lists.isEmpty(session.carrito)}"
-                class="list-group-item text-center text-muted py-4 border-0"
-              >
-                <i class="bi bi-cart-x fs-2 d-block mb-2"></i>
-                No hay productos para procesar.
-              </li>
-
-              <!-- Iteración de productos -->
-              <li
-                th:each="item : ${session.carrito}"
-                class="list-group-item d-flex justify-content-between lh-sm px-0 py-3 border-bottom"
-              >
-                <div class="d-flex align-items-center">
-                  <img
-                    th:src="${item.imagenUrl != null ? item.imagenUrl : '/assets/img/Yeezy.jpg'}"
-                    alt="Prenda"
-                    style="width: 50px; height: 50px; object-fit: cover"
-                    class="rounded me-3 border"
-                  />
-                  <div>
-                    <h6
-                      class="my-0 fw-bold text-truncate"
-                      style="max-width: 140px"
-                      th:text="${item.nombre}"
-                    >
-                      Nombre
-                    </h6>
-                    <small
-                      class="text-muted"
-                      th:text="${item.marca + ' | Talla: ' + item.talla}"
-                      >Marca | Talla</small
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="text-end d-flex flex-column align-items-end justify-content-center"
-                >
-                  <span
-                    class="text-muted d-block fw-bold"
-                    th:text="${'S/ ' + item.precio}"
-                    >S/ 0.00</span
-                  >
-
-                  <!-- Contenedor: Cantidad + Basurero -->
-                  <div class="d-flex align-items-center mt-2">
-                    <small
-                      class="badge bg-secondary text-white me-2"
-                      th:text="${'Cant: ' + item.cantidad}"
-                      >Cant: 1</small
-                    >
-
-                    <!-- Botón Eliminar -->
-                    <form
-                      th:action="@{/carrito/eliminar}"
-                      method="post"
-                      class="m-0 p-0"
-                    >
-                      <input
-                        type="hidden"
-                        name="productoId"
-                        th:value="${item.productoId}"
-                      />
-                      <input
-                        type="hidden"
-                        name="talla"
-                        th:value="${item.talla}"
-                      />
-                      <button
-                        type="submit"
-                        class="btn btn-sm text-danger p-0"
-                        title="Eliminar del resumen"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </li>
-
-              <!-- TOTAL FINAL -->
-              <li
-                class="list-group-item d-flex justify-content-between px-0 py-3 mt-2 border-0 bg-light rounded mt-2"
-              >
-                <span class="fs-5 fw-bold text-dark px-2">Total</span>
-                <strong
-                  class="fs-5 fw-bold text-dark px-2"
-                  th:text="${session.totalCarrito != null ? 'S/ ' + session.totalCarrito : 'S/ 0.00'}"
-                  >S/ 0.00</strong
-                >
-              </li>
-            </ul>
-
-            <!-- Formulario de cupón -->
-            <form class="card p-2 border-0 bg-light">
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Código promo"
-                />
-                <button type="button" class="btn btn-secondary" disabled>
-                  Canjear
-                </button>
+        <div class="col-lg-4">
+          <div class="card border-0 rounded-4 shadow-sm p-4 sticky-top" style="top: 100px;">
+            <h5 class="fw-bold mb-4">Resumen del pedido</h5>
+            <div class="mb-4">
+              <div th:each="item : ${session.carrito}" class="d-flex justify-content-between mb-3 small">
+                <span class="text-muted text-truncate me-3" style="max-width: 200px" th:text="${item.cantidad + 'x ' + item.nombre}"></span>
+                <span class="fw-bold" th:text="${'S/ ' + (item.precio * item.cantidad)}"></span>
               </div>
-            </form>
+            </div>
+            <hr class="text-muted opacity-25 mb-4" />
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+              <span class="fw-bold">Total a Pagar</span>
+              <span class="fs-4 fw-bold" th:text="${session.totalCarrito != null ? 'S/ ' + session.totalCarrito : 'S/ 0.00'}"></span>
+            </div>
+            <button type="submit" form="checkoutForm" class="btn btn-dark btn-lg w-100 fw-bold rounded-3" th:disabled="${session.carrito == null or #lists.isEmpty(session.carrito)}">
+              Confirmar Compra
+            </button>
           </div>
         </div>
       </div>
     </main>
-    <!-- MODAL: Términos y Condiciones -->
-    <div
-      class="modal fade"
-      id="modalTerminos"
-      tabindex="-1"
-      aria-labelledby="modalTerminosLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title fw-bold" id="modalTerminosLabel">
-              Términos y Condiciones
-            </h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body text-muted small">
-            <h6 class="fw-bold text-dark">1. Aceptación de los Términos</h6>
-            <p>
-              Al acceder y utilizar el sitio web de FAHAR Streetwear, aceptas
-              estar sujeto a estos términos y condiciones. Si no estás de
-              acuerdo con alguna parte, no podrás utilizar nuestros servicios.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">2. Compras y Pagos</h6>
-            <p>
-              Todos los precios están en Soles (PEN) e incluyen IGV. Nos
-              reservamos el derecho de modificar los precios en cualquier
-              momento. Las compras están sujetas a disponibilidad de stock.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">3. Propiedad Intelectual</h6>
-            <p>
-              Todo el contenido visual, fotografías y logotipos son propiedad
-              exclusiva de FAHAR o de sus respectivas marcas afiliadas. Queda
-              prohibida su reproducción sin autorización.
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-dark w-100"
-              data-bs-dismiss="modal"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL: Políticas de Privacidad y Devolución -->
-    <div
-      class="modal fade"
-      id="modalPoliticas"
-      tabindex="-1"
-      aria-labelledby="modalPoliticasLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title fw-bold" id="modalPoliticasLabel">
-              Políticas y Privacidad
-            </h5>
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body text-muted small">
-            <h6 class="fw-bold text-dark">1. Privacidad de Datos</h6>
-            <p>
-              FAHAR Streetwear se compromete a proteger tu privacidad. Los datos
-              personales solicitados (nombre, teléfono, correo) son utilizados
-              estrictamente para procesar tus pedidos y mejorar tu experiencia
-              de compra, bajo la Ley de Protección de Datos Personales (Ley N°
-              29733).
-            </p>
-            <h6 class="fw-bold text-dark mt-3">2. Política de Devoluciones</h6>
-            <p>
-              Aceptamos cambios y devoluciones dentro de los
-              <strong>7 días calendario</strong> posteriores a la recepción de
-              tu pedido. La prenda debe estar en su estado original, sin uso,
-              sin lavado y con todas sus etiquetas y empaques originales.
-            </p>
-            <h6 class="fw-bold text-dark mt-3">3. Artículos no retornables</h6>
-            <p>
-              Por motivos de higiene, no se aceptan devoluciones de accesorios,
-              ropa interior o calcetines, salvo por defectos de fábrica.
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-dark w-100"
-              data-bs-dismiss="modal"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">FAHAR</h5>
-            <p class="text-secondary small">
-              La tienda streetwear de referencia en Lima. Autenticidad y
-              comunidad desde 2021.
-            </p>
-          </div>
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">Atención al Cliente</h5>
-            <ul class="list-unstyled text-secondary small">
-              <li>
-                <a
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalTerminos"
-                  class="text-decoration-none text-secondary"
-                  >Términos y Condiciones</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalPoliticas"
-                  class="text-decoration-none text-secondary"
-                  >Políticas de Devolución</a
-                >
-              </li>
-              <li>
-                <a
-                  th:href="@{/contacto(asunto='reclamo')}"
-                  class="text-decoration-none text-secondary"
-                  >Libro de Reclamaciones</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-4 mb-3">
-            <h5 class="fw-bold">Contacto</h5>
-            <ul class="list-unstyled text-secondary small">
-              <li>
-                <i class="bi bi-geo-alt-fill me-2"></i>Av. Aviación 2340, San
-                Borja
-              </li>
-              <li><i class="bi bi-whatsapp me-2"></i>+51 923 602 365</li>
-              <li><i class="bi bi-envelope-fill me-2"></i>contacto@fahar.pe</li>
-              <li class="mt-2">Lunes a Sábado: 10:00 am - 8:00 pm</li>
-            </ul>
-          </div>
-        </div>
-        <hr class="text-secondary" />
-        <div class="text-center text-secondary small">
-          &copy; 2026 FAHAR Streetwear. Todos los derechos reservados.
-        </div>
-      </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/assets/js/app.js}"></script>
